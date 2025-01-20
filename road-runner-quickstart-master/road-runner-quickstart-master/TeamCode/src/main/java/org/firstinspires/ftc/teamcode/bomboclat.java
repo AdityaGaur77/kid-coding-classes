@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="bis_optimized", group="Linear Opmode")
+@TeleOp(name="bomboclat", group="Linear Opmode")
 public class bomboclat extends LinearOpMode {
     // Original motors
     private DcMotor leftFrontDrive;
@@ -27,75 +27,47 @@ public class bomboclat extends LinearOpMode {
     private double clawPower = 0;
     private double clawPivotPower = 0;
     private double clawRotationPower = 0;
-    private boolean isClawClosed = false;
+    private boolean isClawClosed = true;
 
     // Claw constants
-    private static final double CLAW_OPEN_POWER = 0.65;
-    private static final double CLAW_CLOSE_POWER = -0.65;
-    private static final double CLAW_STOP_POWER = 0.0;
-    private static final double SERVO_INCREMENT = 0.2;
+    private static final double CLAW_OPEN_POWER = 0.5;
+    private static final double CLAW_CLOSE_POWER = -0.5;
+    private static final double SERVO_INCREMENT = 0.1;
 
     // Previous button states
     private boolean dpadUpPrev = false;
     private boolean dpadDownPrev = false;
     private boolean dpadLeftPrev = false;
     private boolean dpadRightPrev = false;
-    private boolean leftStickButtonPrev = false;
-    private boolean rightStickButtonPrev = false;
-    private boolean xButtonPrev = false;
+    private boolean bButtonPrev = false;
+
+    private static final int PITCH_HOME_POSITION = 0;
+    private static final int SLIDES_HOME_POSITION = 0;
+    private static final double CLAW_PIVOT_HOME_POWER = 0.0;
+    private static final int SLIDES_FULL_OUT = 1590;
+    private static final int SLIDES_EXTEND_500 = 1025;
+    private static final int PITCH_FULL_OUT = 820;
+    private static final int PITCH_EXTEND_900 = 576;
 
 
-    private static final double SERVO_HOLD_POWER = 0.5; // Power when holding d-pad
+    private static final double SERVO_HOLD_POWER = 0.5;
+
+    private boolean yButtonPrev = false;
+    private boolean isPitchUp = false;// Power when holding d-pad
+    private static final int PITCH_Y_UP_POSITION = 700;
 
 
     private static final double PITCH_POWER = 0.4;
-    private static final double PITCH_POWER_REDUCED = 0.2;
-    private static final double PITCH_POWER_HANG = 1.0;
     private static final double SLIDE_POWER = 0.6;
     private static final double DRIVE_POWER = 0.7;
 
 
-    // Position constants
-    private static final int PITCH_UP_200 = 115;
-    private static final int PITCH_UP_500 = 573;
-    private static final int SLIDES_OUT_500 = 823;
-    private static final int SLIDES_FULL_OUT = 1700;
+    // Position constants;
     private static final int PITCH_MAX_POSITION = 950;
-    private static final int SLIDE_MAX_POSITION = 2200;
-    private static final int SLIDES_OUT_200 = 600;
+    private static final int SLIDE_MAX_POSITION = 2200  ;
 
     private ElapsedTime clawTimer = new ElapsedTime();
-    private static final double CLAW_OPERATION_TIME = 0.2; // Time in seconds for claw to open/close
-
-    // Updated State enums
-    private enum RobotState { SPECIMEN, SUBMERSIBLE, BASKET, HANG }
-    private enum SpecimenState {
-        READY, SLIDES_OUT, PITCH_UP, SLIDES_IN, RESET
-    }
-    private enum SubmersibleSequence {
-        READY, PITCH_UP_200, CLAW_PIVOT, PITCH_DOWN, SLIDES_OUT_500,
-        SLIDES_IN, SLIDES_FULL_OUT, PITCH_UP_500
-    }
-    private enum BasketSequence {
-        READY, PITCH_UP_200, CLAW_PIVOT, PITCH_DOWN, SLIDES_OUT_500,
-        SLIDES_IN, SLIDES_FULL_OUT, PITCH_UP_500
-    }
-
-    private enum HangState { READY, PITCH_BACK }
-
-
-    private HangState hangState = HangState.READY;
-
-    // State variables
-    private RobotState currentState = RobotState.SPECIMEN;
-    private SpecimenState specimenState = SpecimenState.READY;
-    private SubmersibleSequence submersibleState = SubmersibleSequence.READY;
-    private BasketSequence basketState = BasketSequence.READY;
-
-    private boolean yButtonPressed = false;
-    private boolean bButtonPressed = false;
-    private boolean xButtonPressed = false;
-    private boolean aButtonPressed = false;
+    private static final double CLAW_OPERATION_TIME = 0.1; // Time in seconds for claw to open/close
 
 
     // Motor state tracking
@@ -110,14 +82,39 @@ public class bomboclat extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
+            handleButtonControls();
             handleDriveMovement();
-            handleStateTransitions();
             handleClawControl();
-            handleCurrentState();
             handleManualControls();
             updateTelemetry();
         }
     }
+
+    private void handleButtonControls() {
+        // B Button: Toggle claw open/close
+        if (gamepad1.b && !bButtonPrev) { // Check if B is pressed and wasn't pressed previously
+            isClawClosed = !isClawClosed;  // Toggle the claw state
+            clawServo.setPower(isClawClosed ? CLAW_CLOSE_POWER : CLAW_OPEN_POWER); // Set the servo power based on the state
+        }
+        bButtonPrev = gamepad1.b; // Update the previous state of the B button
+
+        // A Button: Reset pitch, slides, and claw pivot to home position
+        if (gamepad1.a) {
+            moveSlidesToPosition(SLIDES_HOME_POSITION);
+            movePitchToPosition(PITCH_HOME_POSITION);
+            clawPivotServo.setPower(CLAW_PIVOT_HOME_POWER);
+            clawRotationServo.setPower(0);
+        }
+
+        // X Button: Extend slides to 500 and pitch to 900
+        if (gamepad1.x) {
+            moveSlidesToPosition(SLIDES_EXTEND_500);
+            movePitchToPosition(PITCH_EXTEND_900);
+        }
+
+        // Y Button: Move pitch up/down and open/close claw based on state
+    }
+
 
 
     private void initializeHardware() {
@@ -144,15 +141,14 @@ public class bomboclat extends LinearOpMode {
         pitchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        // Initialize servos to stopped position
-        clawServo.setPower(0);
-        clawPivotServo.setPower(0);
-        clawRotationServo.setPower(0);
+        // Start with the claw in the closed position
+        clawServo.setPower(CLAW_CLOSE_POWER);
     }
+
 
     private void handleClawControl() {
         // Toggle claw open/close with X button
-        if (gamepad1.x && !xButtonPrev) {
+        if (gamepad1.b && !bButtonPrev) {
             if (isClawClosed) {
                 clawServo.setPower(CLAW_OPEN_POWER);
                 isClawClosed = false;
@@ -161,7 +157,7 @@ public class bomboclat extends LinearOpMode {
                 isClawClosed = true;
             }
         }
-        xButtonPrev = gamepad1.x;
+        bButtonPrev = gamepad1.b;
 
         // Claw Pivot Control (D-pad up/down)
         if (gamepad1.dpad_up) {
@@ -202,19 +198,6 @@ public class bomboclat extends LinearOpMode {
         dpadRightPrev = gamepad1.dpad_right;
     }
 
-    private void handleCurrentState() {
-        switch (currentState) {
-            case SPECIMEN:
-                handleSpecimenState();
-                break;
-            case SUBMERSIBLE:
-                handleSubmersibleSequence();
-                break;
-            case BASKET:
-                handleBasketSequence();
-                break;
-        }
-    }
 
     private void handleManualControls() {
         double pitchInput = gamepad1.right_trigger - gamepad1.left_trigger;
@@ -321,232 +304,6 @@ public class bomboclat extends LinearOpMode {
         slideMotor.setPower(SLIDE_POWER);
     }
 
-    private BasketSequence getPreviousBasketState() {
-        switch (basketState) {
-            case PITCH_UP_200: return BasketSequence.READY;
-            case CLAW_PIVOT: return BasketSequence.PITCH_UP_200;
-            case PITCH_DOWN: return BasketSequence.CLAW_PIVOT;
-            case SLIDES_OUT_500: return BasketSequence.PITCH_DOWN;
-            case SLIDES_IN: return BasketSequence.SLIDES_OUT_500;
-            case SLIDES_FULL_OUT: return BasketSequence.SLIDES_IN;
-            case PITCH_UP_500: return BasketSequence.SLIDES_FULL_OUT;
-            default: return basketState;
-        }
-    }
-
-    private void handleBasketSequence() {
-        if (gamepad1.b && !bButtonPressed) {
-            switch (basketState) {
-                case READY:
-                    movePitchToPosition(PITCH_UP_200);
-                    basketState = BasketSequence.PITCH_UP_200;
-                    break;
-                case PITCH_UP_200:
-                    basketState = BasketSequence.CLAW_PIVOT;
-                    break;
-                case CLAW_PIVOT:
-                    movePitchToPosition(0);
-                    basketState = BasketSequence.PITCH_DOWN;
-                    break;
-                case PITCH_DOWN:
-                    moveSlidesToPosition(SLIDES_OUT_500);
-                    basketState = BasketSequence.SLIDES_OUT_500;
-                    break;
-                case SLIDES_OUT_500:
-                    moveSlidesToPosition(0);
-                    basketState = BasketSequence.SLIDES_IN;
-                    break;
-                case SLIDES_IN:
-                    moveSlidesToPosition(SLIDES_FULL_OUT);
-                    basketState = BasketSequence.SLIDES_FULL_OUT;
-                    break;
-                case SLIDES_FULL_OUT:
-                    movePitchToPosition(PITCH_UP_500);
-                    basketState = BasketSequence.PITCH_UP_500;
-                    break;
-                case PITCH_UP_500:
-                    resetPositions();
-                    basketState = BasketSequence.READY;
-                    break;
-            }
-        }
-        bButtonPressed = gamepad1.b;
-    }
-
-    // State handling methods (implementations remain similar but simplified)
-    private void handleStateTransitions() {
-
-        if (gamepad1.y && !yButtonPressed) {
-            yButtonPressed = true;
-            switch (currentState) {
-                case SPECIMEN:
-                    currentState = RobotState.SUBMERSIBLE;
-                    break;
-                case SUBMERSIBLE:
-                    currentState = RobotState.BASKET;
-                    break;
-                case BASKET:
-                    currentState = RobotState.HANG;
-                    break;
-                case HANG:
-                    currentState = RobotState.SPECIMEN;
-                    break;
-            }
-            resetPositions();
-        }
-        yButtonPressed = gamepad1.y;
-
-        if (gamepad1.y && !yButtonPressed) {
-            yButtonPressed = true;
-            switch (currentState) {
-                case SPECIMEN:
-                    currentState = RobotState.SUBMERSIBLE;
-                    break;
-                case SUBMERSIBLE:
-                    currentState = RobotState.BASKET;
-                    break;
-                case BASKET:
-                    currentState = RobotState.SPECIMEN;
-                    break;
-            }
-            resetPositions();
-        }
-        yButtonPressed = gamepad1.y;
-
-        // Back one state (X button)
-        if (gamepad1.x && !xButtonPressed) {
-            xButtonPressed = true;
-            switch (currentState) {
-                case SPECIMEN:
-                    specimenState = getPreviousSpecimenState();
-                    break;
-                case SUBMERSIBLE:
-                    submersibleState = getPreviousSubmersibleState();
-                    break;
-                case BASKET:
-                    basketState = getPreviousBasketState();
-                    break;
-            }
-        }
-        xButtonPressed = gamepad1.x;
-
-
-        // Mode switch (Y button)
-        if (gamepad1.y && !yButtonPressed) {
-            yButtonPressed = true;
-            currentState = (currentState == RobotState.SPECIMEN) ?
-                    RobotState.SUBMERSIBLE : RobotState.SPECIMEN;
-            resetPositions();
-        }
-        yButtonPressed = gamepad1.y;
-
-        // Back one state (X button)
-        if (gamepad1.x && !xButtonPressed) {
-            xButtonPressed = true;
-            if (currentState == RobotState.SPECIMEN) {
-                specimenState = getPreviousSpecimenState();
-            } else {
-                submersibleState = getPreviousSubmersibleState();
-            }
-        }
-        xButtonPressed = gamepad1.x;
-
-        // Reset (A button)
-        if (gamepad1.a && !aButtonPressed) {
-            resetPositions();
-        }
-        aButtonPressed = gamepad1.a;
-    }
-
-    private SubmersibleSequence getPreviousSubmersibleState() {
-        switch (submersibleState) {
-            case PITCH_UP_200: return SubmersibleSequence.READY;
-            case CLAW_PIVOT: return SubmersibleSequence.PITCH_UP_200;
-            case PITCH_DOWN: return SubmersibleSequence.CLAW_PIVOT;
-            case SLIDES_OUT_500: return SubmersibleSequence.PITCH_DOWN;
-            case SLIDES_IN: return SubmersibleSequence.SLIDES_OUT_500;
-            case SLIDES_FULL_OUT: return SubmersibleSequence.SLIDES_IN;
-            case PITCH_UP_500: return SubmersibleSequence.SLIDES_FULL_OUT;
-            default: return submersibleState;
-        }
-    }
-
-    private void handleSpecimenState() {
-        if (gamepad1.b && !bButtonPressed) {
-            switch (specimenState) {
-                case READY:
-                    moveSlidesToPosition(SLIDES_OUT_200);
-                    specimenState = SpecimenState.SLIDES_OUT;
-                    break;
-                case SLIDES_OUT:
-                    movePitchToPosition(PITCH_UP_500);
-                    specimenState = SpecimenState.PITCH_UP;
-                    break;
-                case PITCH_UP:
-                    moveSlidesToPosition(0);
-                    specimenState = SpecimenState.SLIDES_IN;
-                    break;
-                case SLIDES_IN:
-                    resetPositions();
-                    specimenState = SpecimenState.RESET;
-                    break;
-                case RESET:
-                    specimenState = SpecimenState.READY;
-                    break;
-            }
-        }
-        bButtonPressed = gamepad1.b;
-    }
-
-    private SpecimenState getPreviousSpecimenState() {
-        switch (specimenState) {
-            case SLIDES_OUT: return SpecimenState.READY;
-            case PITCH_UP: return SpecimenState.SLIDES_OUT;
-            case SLIDES_IN: return SpecimenState.PITCH_UP;
-            case RESET: return SpecimenState.SLIDES_IN;
-            default: return specimenState;
-        }
-    }
-
-
-    private void handleSubmersibleSequence() {
-        if (gamepad1.b && !bButtonPressed) {
-            switch (submersibleState) {
-                case READY:
-                    movePitchToPosition(PITCH_UP_200);
-                    submersibleState = SubmersibleSequence.PITCH_UP_200;
-                    break;
-                case PITCH_UP_200:
-                    submersibleState = SubmersibleSequence.CLAW_PIVOT;
-                    break;
-                case CLAW_PIVOT:
-                    movePitchToPosition(0);
-                    submersibleState = SubmersibleSequence.PITCH_DOWN;
-                    break;
-                case PITCH_DOWN:
-                    moveSlidesToPosition(SLIDES_OUT_500);
-                    submersibleState = SubmersibleSequence.SLIDES_OUT_500;
-                    break;
-                case SLIDES_OUT_500:
-                    moveSlidesToPosition(0);
-                    submersibleState = SubmersibleSequence.SLIDES_IN;
-                    break;
-                case SLIDES_IN:
-                    moveSlidesToPosition(SLIDES_FULL_OUT);
-                    submersibleState = SubmersibleSequence.SLIDES_FULL_OUT;
-                    break;
-                case SLIDES_FULL_OUT:
-                    movePitchToPosition(PITCH_UP_500);
-                    submersibleState = SubmersibleSequence.PITCH_UP_500;
-                    break;
-                case PITCH_UP_500:
-                    resetPositions();
-                    submersibleState = SubmersibleSequence.READY;
-                    break;
-            }
-        }
-        bButtonPressed = gamepad1.b;
-    }
 
     private void resetPositions() {
         movePitchToPosition(0);
@@ -565,7 +322,6 @@ public class bomboclat extends LinearOpMode {
         telemetry.addData("Slide Target", slideMotor.getTargetPosition());
         telemetry.addData("Slide Power", slideMotor.getPower());
         telemetry.addData("Claw State", isClawClosed ? "Closed" : "Open");
-        telemetry.addData("Current State", currentState);
         telemetry.update();
     }
 }
