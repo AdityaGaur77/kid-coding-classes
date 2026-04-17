@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>CodeKids Summer 2026</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script>
+      window.firebaseBootError = "";
+      try {
+        const firebaseConfig = {
+          apiKey: "AIzaSyBmi_ecKiyJr8GRhyQ_ZNl6rM6NDdr3gUg",
+          authDomain: "codekids-camp.firebaseapp.com",
+          projectId: "codekids-camp",
+          storageBucket: "codekids-camp.firebasestorage.app",
+          messagingSenderId: "832677156374",
+          appId: "1:832677156374:web:d8ac0b359961d495750737",
+          measurementId: "G-JVZWRMWXQE"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      } catch (error) {
+        window.firebaseBootError = error && error.message ? error.message : "Firebase failed to initialize.";
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
