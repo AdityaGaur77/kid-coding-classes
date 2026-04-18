@@ -93,6 +93,7 @@ export type Student = {
   parentName: string;
   source: string;
   registrationStatus: string;
+  password?: string;
 };
 
 function normalizeStudent(doc: { id: string } & Record<string, unknown>): Student {
@@ -106,7 +107,8 @@ function normalizeStudent(doc: { id: string } & Record<string, unknown>): Studen
     age: (doc["age"] as string) || "",
     parentName: (doc["parentName"] as string) || "",
     source: (doc["source"] as string) || "manual",
-    registrationStatus: (doc["registrationStatus"] as string) || (doc["paid"] ? "approved" : "payment-pending")
+    registrationStatus: (doc["registrationStatus"] as string) || (doc["paid"] ? "approved" : "payment-pending"),
+    password: (doc["password"] as string) || undefined,
   };
 }
 

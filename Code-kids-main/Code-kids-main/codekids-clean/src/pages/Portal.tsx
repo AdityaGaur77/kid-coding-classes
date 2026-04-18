@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { fbFindStudentByEmail, fbGetSettings, getFirebaseError, DEFAULT_SETTINGS, type Student, type Settings } from "@/lib/firebase";
 import { trackMeta, splitCurriculum, safeDateLabel } from "@/lib/utils";
 import { Video, BookOpen, Link2, CalendarDays, CheckCircle2, Clock3 } from "lucide-react";
@@ -10,13 +11,18 @@ const TRACK_THEME = {
 
 export function Portal() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [student, setStudent] = useState<Student | null>(null);
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   async function lookup() {
-    if (!email.trim()) return;
+    if (!email.trim() || !password.trim()) {
+      setError("Please enter both your email and password.");
+      return;
+    }
     setLoading(true);
     setError("");
     try {
@@ -25,6 +31,14 @@ export function Portal() {
         setStudent(null);
         setSettings(DEFAULT_SETTINGS);
         setError("We couldn't find an account with that email. Double-check the email used at signup!");
+        setLoading(false);
+        return;
+      }
+      // Password check — students without a stored password (legacy) can still log in with email only
+      if (foundStudent.password && foundStudent.password !== password.trim()) {
+        setStudent(null);
+        setSettings(DEFAULT_SETTINGS);
+        setError("Incorrect password. Check the password you received at registration.");
         setLoading(false);
         return;
       }
@@ -54,27 +68,55 @@ export function Portal() {
         <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 py-16 text-center">
          
           <h1 className="font-serif text-4xl sm:text-5xl text-slate-900 mb-3">Student Portal</h1>
-          <p className="text-slate-500 text-lg mb-8 max-w-sm">Enter the email your parent used when signing up.</p>
+          <p className="text-slate-500 text-lg mb-8 max-w-sm">Sign in with the email and password you received at registration.</p>
 
           <div className="w-full max-w-sm flex flex-col gap-3">
-            <input
-              data-testid="input-portal-email"
-              className="w-full border-2 border-slate-200 rounded-2xl px-4 py-4 text-base outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 text-center"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && lookup()}
-              placeholder="family@example.com"
-            />
+            <div>
+              <label className="block text-xs font-bold text-slate-600 mb-1.5 text-left">Email</label>
+              <input
+                data-testid="input-portal-email"
+                className="w-full border-2 border-slate-200 rounded-2xl px-4 py-3.5 text-base outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && lookup()}
+                placeholder="family@example.com"
+                type="email"
+                autoComplete="email"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-600 mb-1.5 text-left">Password</label>
+              <div className="relative">
+                <input
+                  data-testid="input-portal-password"
+                  className="w-full border-2 border-slate-200 rounded-2xl px-4 py-3.5 pr-12 text-base outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 font-mono tracking-wider"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && lookup()}
+                  placeholder="e.g. Tiger428"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
             <button
               data-testid="btn-open-portal"
-              className="w-full bg-blue-600 text-white rounded-2xl px-6 py-4 font-bold text-base hover:bg-blue-700 transition-colors disabled:opacity-70 flex items-center justify-center gap-2 shadow-lg shadow-blue-200"
+              className="w-full bg-blue-600 text-white rounded-2xl px-6 py-4 font-bold text-base hover:bg-blue-700 transition-colors disabled:opacity-70 flex items-center justify-center gap-2 shadow-lg shadow-blue-200 mt-1"
               onClick={lookup}
               disabled={loading}
             >
               {loading ? (
                 <>
                   <span className="w-5 h-5 rounded-full border-2 border-white/40 border-t-white animate-spin inline-block" />
-                  Looking you up...
+                  Signing in...
                 </>
               ) : "Open My Portal →"}
             </button>
