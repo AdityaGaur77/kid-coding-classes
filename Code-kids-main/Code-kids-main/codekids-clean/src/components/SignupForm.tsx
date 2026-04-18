@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { fbGetSettings, fbFindStudentByEmail, fbAddStudent, getFirebaseError, DEFAULT_SETTINGS, type Settings } from "@/lib/firebase";
-import { PaymentMethods } from "./PaymentMethods";
 
 export function SignupForm() {
   const [form, setForm] = useState({
@@ -10,6 +9,8 @@ export function SignupForm() {
   const [saving, setSaving] = useState(false);
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  // Add this state at the top with your other useState calls
+const [showQrOnly, setShowQrOnly] = useState(false);
 
   useEffect(() => {
     fbGetSettings().then(setSettings).catch(() => {});
@@ -83,19 +84,7 @@ export function SignupForm() {
         <label className="block text-xs font-bold text-slate-700 mb-1.5">Notes</label>
         <textarea data-testid="input-notes" className="w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 resize-y min-h-[80px]" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Anything about experience level or schedule." />
       </div>
-      <div className="border border-slate-200 rounded-2xl p-5 bg-slate-50">
-        <div className="font-bold text-slate-900 mb-2">Payment</div>
-        <p className="text-slate-500 text-sm mb-1">{settings.paymentInstructions}</p>
-        <p className="text-slate-500 text-sm mb-3">Program total: $75 per student (3 weeks × $25/week).</p>
-        {showPaymentOptions ? (
-          <>
-            <p className="text-xs font-bold tracking-wide text-slate-700 uppercase mb-3">Choose either QR code to pay</p>
-            <PaymentMethods settings={settings} compact />
-          </>
-        ) : (
-          <p className="text-slate-500 text-sm">QR codes appear here right after form submission.</p>
-        )}
-      </div>
+      
       {state.text && (
         <div className={`p-3.5 rounded-xl text-sm ${state.type === "success" ? "bg-emerald-50 border border-emerald-200 text-emerald-700" : "bg-red-50 border border-red-200 text-red-700"}`}>
           {state.text}

@@ -1,6 +1,9 @@
 import { SiGithub } from "react-icons/si";
 import { Trophy, Star, Users, Rocket, Linkedin, Clock, Zap, CalendarDays, Video } from "lucide-react";
 import { SignupForm } from "@/components/SignupForm";
+import { useState } from "react";
+
+
 
 type View = "home" | "schedule" | "portal" | "admin";
 
@@ -178,6 +181,32 @@ function MentorSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+function QrToggle() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="mt-5">
+      <button
+        onClick={() => setOpen(!open)}
+        className="text-sm font-bold text-blue-600 underline"
+      >
+        {open ? "Hide payment QR codes" : "Already registered? View payment QR codes"}
+      </button>
+      {open && (
+        <div className="grid grid-cols-2 gap-3 mt-4">
+          <div className="border border-slate-200 rounded-2xl p-3 bg-white">
+            <div className="font-bold text-slate-900 text-sm mb-2">PayPal</div>
+            <img src="/paypal.jpeg" alt="PayPal QR code" className="w-full aspect-square object-cover rounded-xl border border-slate-200" />
+          </div>
+          <div className="border border-slate-200 rounded-2xl p-3 bg-white">
+            <div className="font-bold text-slate-900 text-sm mb-2">Zelle</div>
+            <img src="/zelle.jpeg" alt="Zelle QR code" className="w-full aspect-square object-cover rounded-xl border border-slate-200" />
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -366,7 +395,6 @@ export function Home({ setView }: HomeProps) {
             <div>
               <div className="font-bold text-white text-base">Second Batch — July 7 to July 24</div>
               <div className="text-slate-200 text-sm mt-0.5">
-                Opens if there&apos;s enough interest.
               </div>
             </div>
           </div>
@@ -402,25 +430,28 @@ export function Home({ setView }: HomeProps) {
             <p className="mt-3 text-slate-500">Submit the form, send payment, and your registration will be activated after payment is confirmed.</p>
             <SignupForm />
           </div>
-          <div className="bg-gradient-to-b from-slate-50 to-blue-50 border border-slate-200 rounded-2xl p-8">
-            <h3 className="font-serif text-2xl text-slate-900 mb-5">Registration steps</h3>
-            <div className="flex flex-col gap-4">
-              {[
-                ["1", "Enter parent name, email, student name, track, and any notes."],
-                ["2", "After submitting, scan either the PayPal or Zelle QR code to pay."],
-                ["3", "Once payment is confirmed, the registration is activated."],
-                ["4", "Use that same email to open the student portal for Zoom links and recordings."],
-              ].map(([num, text]) => (
-                <div key={num} className="flex gap-3 items-start">
-                  <div className="w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{num}</div>
-                  <p className="text-slate-600 text-sm leading-relaxed">{text}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-700 text-sm">
-              Please include the student name in the payment note so the registration can be matched quickly.
-            </div>
-          </div>
+          <div className="bg-gradient-to-b from-slate-50 to-blue-50 border border-slate-200 rounded-2xl p-8 self-start">
+  <h3 className="font-serif text-2xl text-slate-900 mb-5">Registration steps</h3>
+  <div className="flex flex-col gap-4">
+    {[
+      ["1", "Enter parent name, email, student name, track, and any notes."],
+      ["2", "After submitting, scan either the PayPal or Zelle QR code to pay."],
+      ["3", "Once payment is confirmed, the registration is activated."],
+      ["4", "Use that same email to open the student portal for Zoom links and recordings."],
+    ].map(([num, text]) => (
+      <div key={num} className="flex gap-3 items-start">
+        <div className="w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{num}</div>
+        <p className="text-slate-600 text-sm leading-relaxed">{text}</p>
+      </div>
+    ))}
+  </div>
+
+  <QrToggle />
+
+  <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-700 text-sm">
+    Please include the student name in the payment note so the registration can be matched quickly.
+  </div>
+</div>
         </div>
       </section>
 
