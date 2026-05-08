@@ -395,7 +395,7 @@ export function Home({ setView }: HomeProps) {
             <div>
               <div className="font-bold text-white text-base">Second Batch Coming in July</div>
               <div className="text-slate-200 text-sm mt-0.5">
-                Stay tuned for Batch 2 dates!
+                If there's enough interest!
               </div>
             </div>
           </div>
