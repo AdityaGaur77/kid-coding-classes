@@ -27,8 +27,8 @@ export type Track = "pygame" | "ml";
 
 export function trackMeta(track: Track) {
   return track === "ml"
-    ? { name: "AI for Kids", price: "$25 / week", total: "$50 total", color: "#0f766e", badge: "bg-teal-100 text-teal-700", curriculum: ML_CURRICULUM }
-    : { name: "Build Games with Python", price: "$25 / week", total: "$50 total", color: "#ea580c", badge: "bg-amber-100 text-amber-700", curriculum: PYGAME_CURRICULUM };
+    ? { name: "AI + Image Recognition", price: "$25 / week", total: "$50 total", color: "#0f766e", badge: "bg-teal-100 text-teal-700", curriculum: ML_CURRICULUM }
+    : { name: "Games with Python", price: "$25 / week", total: "$50 total", color: "#ea580c", badge: "bg-amber-100 text-amber-700", curriculum: PYGAME_CURRICULUM };
 }
 
 export function safeDateLabel(iso: string): string {

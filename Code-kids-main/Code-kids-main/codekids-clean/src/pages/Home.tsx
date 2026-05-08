@@ -35,7 +35,7 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
   const details = isMl
     ? {
         trackLabel: "AI TRACK",
-        title: "AI for Kids",
+        title: "AI + Image Recognition",
         description:
           "Learn how AI works by training your own model to recognize hand gestures. Build an interactive app that triggers cool visual effects when you wave, point, or make a fist!",
         price: "$25",
@@ -46,7 +46,7 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
       }
     : {
         trackLabel: "PYTHON TRACK",
-        title: "Build Games with Python",
+        title: "Games with Python",
         description:
           "Learn Python by building a complete space arcade game. Code your spaceship, dodge asteroids, collect power-ups, and add explosions and sound effects!",
         price: "$25",
@@ -314,7 +314,7 @@ export function Home({ setView }: HomeProps) {
                     </div>
 
                     <h3 className="font-bold text-lg sm:text-xl leading-tight text-white mb-2">
-                      Build Games with Python
+                      Games with Python
                     </h3>
                     
                     <div className="flex flex-wrap gap-1.5 mb-3">
@@ -347,7 +347,7 @@ export function Home({ setView }: HomeProps) {
                     </div>
 
                     <h3 className="font-bold text-lg sm:text-xl leading-tight text-white mb-2">
-                      AI for Kids
+                      AI + Image Recognition
                     </h3>
                     
                     <div className="flex flex-wrap gap-1.5 mb-3">

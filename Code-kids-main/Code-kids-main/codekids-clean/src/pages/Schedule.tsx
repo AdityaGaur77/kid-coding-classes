@@ -59,14 +59,14 @@ export function Schedule() {
             className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${track === "pygame" ? "bg-amber-500 text-white shadow-sm" : "bg-white border border-slate-200 text-slate-700 hover:bg-amber-50 hover:border-amber-200"}`}
             onClick={() => setTrack("pygame")}
           >
-            Build Games with Python
+            Games with Python
           </button>
           <button
             data-testid="btn-track-ml"
             className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${track === "ml" ? "bg-teal-600 text-white shadow-sm" : "bg-white border border-slate-200 text-slate-700 hover:bg-teal-50 hover:border-teal-200"}`}
             onClick={() => setTrack("ml")}
           >
-            AI for Kids
+            AI + Image Recognition
           </button>
         </div>
 
