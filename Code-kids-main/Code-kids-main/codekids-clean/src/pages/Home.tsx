@@ -34,24 +34,24 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
 
   const details = isMl
     ? {
-        trackLabel: "ML / AI TRACK",
-        title: "Build Intelligent AIs",
+        trackLabel: "AI TRACK",
+        title: "AI + Image Recognition",
         description:
-          "Learn decision trees, neural networks, and how LLMs work. Build image classifiers and understand how models are trained for real robotics use cases in class.",
+          "Learn how AI works by training your own model to recognize hand gestures. Build an interactive app that triggers cool visual effects when you wave, point, or make a fist!",
         price: "$25",
         originalPrice: "$55",
-        cta: "Enroll in ML / AI →",
+        cta: "Enroll in AI Track →",
         age: "Ages 10+",
-        prereq: "Python basics included",
+        prereq: "No coding needed",
       }
     : {
-        trackLabel: "PYGAME TRACK",
-        title: "Build Games with Python",
+        trackLabel: "PYTHON TRACK",
+        title: "Games with Python",
         description:
-          "Master variables, loops, graphics, collision, and animation. Ship a completely custom playable game by the end of the track.",
+          "Learn Python by building a complete space arcade game. Code your spaceship, dodge asteroids, collect power-ups, and add explosions and sound effects!",
         price: "$25",
         originalPrice: "$45",
-        cta: "Enroll in Pygame →",
+        cta: "Enroll in Python Track →",
         age: "Ages 8+",
         prereq: "No experience needed",
       };
@@ -84,7 +84,7 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
           {details.prereq}
         </span>
         <span className={`inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-bold ${cardTheme.metaPill}`}>
-          9 live classes
+          6 live classes
         </span>
       </div>
 
@@ -212,8 +212,8 @@ function QrToggle() {
 
 export function Home({ setView }: HomeProps) {
   const heroDetails = [
-    { icon: <CalendarDays className="w-4 h-4 text-blue-300" />, title: "June 9 – 25", sub: "Batch 1 · Summer 2026" },
-    { icon: <Clock className="w-4 h-4 text-blue-300" />, title: "Tue, Wed, Thu", sub: "9 live classes total" },
+    { icon: <CalendarDays className="w-4 h-4 text-blue-300" />, title: "June 2 – 25", sub: "Summer 2026" },
+    { icon: <Clock className="w-4 h-4 text-blue-300" />, title: "Tue, Wed, Thu", sub: "6 classes per track" },
     { icon: <Video className="w-4 h-4 text-blue-300" />, title: "Live on Zoom", sub: "Recordings included" },
   ];
 
@@ -283,11 +283,11 @@ export function Home({ setView }: HomeProps) {
                   <div className="flex items-center gap-3 text-xs text-white/70">
                     <span className="flex items-center gap-1.5">
                       <Video className="w-3.5 h-3.5" />
-                      9 live classes
+                      6 classes per track
                     </span>
                     <span className="flex items-center gap-1.5">
                       <CalendarDays className="w-3.5 h-3.5" />
-                      3 weeks
+                      2 weeks each
                     </span>
                   </div>
                 </div>
@@ -302,7 +302,7 @@ export function Home({ setView }: HomeProps) {
                   <div className="rounded-2xl border border-white/15 bg-white/5 p-4 sm:p-5 flex flex-col">
                     <div className="flex items-start justify-between gap-2 mb-3">
                       <span className="inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wide bg-teal-500/20 text-teal-300 border border-teal-400/30">
-                        Pygame
+                        Python
                       </span>
                       <div className="text-right">
                         <div className="flex items-baseline gap-1.5 justify-end">
@@ -314,7 +314,7 @@ export function Home({ setView }: HomeProps) {
                     </div>
 
                     <h3 className="font-bold text-lg sm:text-xl leading-tight text-white mb-2">
-                      Build Games
+                      Games with Python
                     </h3>
                     
                     <div className="flex flex-wrap gap-1.5 mb-3">
@@ -327,7 +327,7 @@ export function Home({ setView }: HomeProps) {
                     </div>
 
                     <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow">
-                      Learn variables, loops, graphics, animation, and game logic while building a real playable project.
+                      Learn Python by building a space arcade game with asteroids, power-ups, and explosions!
                     </p>
                   </div>
 
@@ -347,7 +347,7 @@ export function Home({ setView }: HomeProps) {
                     </div>
 
                     <h3 className="font-bold text-lg sm:text-xl leading-tight text-white mb-2">
-                      Build AIs
+                      AI + Image Recognition
                     </h3>
                     
                     <div className="flex flex-wrap gap-1.5 mb-3">
@@ -355,12 +355,12 @@ export function Home({ setView }: HomeProps) {
                         Ages 10+
                       </span>
                       <span className="inline-flex items-center rounded-full border border-white/20 bg-white/5 px-2 py-0.5 text-[10px] font-semibold text-white/70">
-                        Python basics
+                        No coding needed
                       </span>
                     </div>
 
                     <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow">
-                      Learn how image classifiers, neural networks, and modern AI systems work by building a guided robotics-focused classifier project together.
+                      Train your own AI to recognize gestures and trigger cool visual effects!
                     </p>
                   </div>
                 </div>
@@ -393,8 +393,9 @@ export function Home({ setView }: HomeProps) {
               <Clock className="w-5 h-5 text-blue-300" />
             </div>
             <div>
-              <div className="font-bold text-white text-base">Second Batch — July 7 to July 24</div>
+              <div className="font-bold text-white text-base">Second Batch Coming in July</div>
               <div className="text-slate-200 text-sm mt-0.5">
+                Stay tuned for Batch 2 dates!
               </div>
             </div>
           </div>
@@ -404,9 +405,9 @@ export function Home({ setView }: HomeProps) {
       <section className="py-16 bg-white">
         <div className="max-w-[1120px] mx-auto px-5">
           <div className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-3">Choose A Track</div>
-          <h2 className="font-serif text-4xl text-slate-900 max-w-xl leading-tight">The two options families compare most.</h2>
+          <h2 className="font-serif text-4xl text-slate-900 max-w-xl leading-tight">Two tracks. One impressive project each.</h2>
           <p className="mt-3 text-slate-500 max-w-2xl">
-            Both tracks follow the same calendar and live format. The main choice is whether your student wants to build a game or build an AI-powered robotics classifier project.
+            Python runs June 2-11, then AI runs June 16-25. Pick one or take both!
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-7">
             <CourseCard track="pygame" />
@@ -463,7 +464,7 @@ export function Home({ setView }: HomeProps) {
             ["Resource Library", "Helpful docs, tools, and links live in one place."],
             ["Flexible Payment", "Use simple PayPal or Zelle payment links or QR codes."],
             ["Beginner Friendly", "Designed for curious students who are just getting started."],
-            ["Project Based", "Every student ends with something real they built."],
+            ["Project Based", "Every student builds a real project to show off at the showcase."],
           ].map(([title, copy]) => (
             <div key={title} className="bg-white border border-slate-200 rounded-2xl p-5">
               <h3 className="font-bold text-slate-900">{title}</h3>
