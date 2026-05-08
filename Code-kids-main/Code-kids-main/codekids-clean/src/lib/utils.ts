@@ -6,35 +6,29 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const PYGAME_CURRICULUM = [
-  { iso: "2026-06-09", label: "Tue Jun 9",  title: "Python Foundations",    desc: "Variables, loops, and functions — everything you need to start coding." },
-  { iso: "2026-06-10", label: "Wed Jun 10", title: "Hello Pygame",           desc: "Open a game window and draw your first scene on screen." },
-  { iso: "2026-06-11", label: "Thu Jun 11", title: "Animation and Motion",   desc: "Move objects smoothly with code and understand the game loop." },
-  { iso: "2026-06-16", label: "Tue Jun 16", title: "Player Controls",        desc: "Handle keyboard and mouse input to make your character respond." },
-  { iso: "2026-06-17", label: "Wed Jun 17", title: "Sprites and Images",     desc: "Import art assets and animate characters frame by frame." },
-  { iso: "2026-06-18", label: "Thu Jun 18", title: "Collision and Scoring",  desc: "Detect collisions, collect items, and display a live scoreboard." },
-  { iso: "2026-06-23", label: "Tue Jun 23", title: "Sound and Polish",       desc: "Add sound effects, music, menus, and a proper game-over screen." },
-  { iso: "2026-06-24", label: "Wed Jun 24", title: "Final Project",          desc: "Design and build your own original game from scratch." },
-  { iso: "2026-06-25", label: "Thu Jun 25", title: "Showcase",               desc: "Present your finished game live — friends and family welcome." },
+  { iso: "2026-06-02", label: "Tue Jun 2",  title: "Python + First Game Window", desc: "Learn variables, loops, and open your first Pygame window with shapes on screen." },
+  { iso: "2026-06-03", label: "Wed Jun 3",  title: "Animation and Player Controls", desc: "Make objects move smoothly and respond to keyboard input." },
+  { iso: "2026-06-04", label: "Thu Jun 4",  title: "Sprites and Collisions", desc: "Add character images, detect collisions, and build game logic." },
+  { iso: "2026-06-09", label: "Tue Jun 9",  title: "Scoring and Sound", desc: "Create a scoreboard, add sound effects, and polish your game." },
+  { iso: "2026-06-10", label: "Wed Jun 10", title: "Build Your Own Game", desc: "Design and build your own original game with guidance." },
+  { iso: "2026-06-11", label: "Thu Jun 11", title: "Showcase Day", desc: "Present your finished game live — friends and family welcome!" },
 ];
 
 export const ML_CURRICULUM = [
-  { iso: "2026-06-09", label: "Tue Jun 9",  title: "Python for Data",        desc: "Core Python — lists, loops, and data types — tuned for AI work." },
-  { iso: "2026-06-10", label: "Wed Jun 10", title: "What ML Actually Is",    desc: "How machines learn patterns from data — with no math required." },
-  { iso: "2026-06-11", label: "Thu Jun 11", title: "First Classifier",       desc: "Build a model that recognizes patterns and makes predictions." },
-  { iso: "2026-06-16", label: "Tue Jun 16", title: "Training vs Testing",    desc: "Understand overfitting, accuracy, and how to evaluate a model fairly." },
-  { iso: "2026-06-17", label: "Wed Jun 17", title: "Neural Networks",        desc: "Layers, neurons, weights — the engine behind modern AI." },
-  { iso: "2026-06-18", label: "Thu Jun 18", title: "How Computers See",      desc: "Pixels as data — how images become numbers a model can learn from." },
-  { iso: "2026-06-23", label: "Tue Jun 23", title: "Image Recognition I",    desc: "Load a real image dataset and start training a convolutional model." },
-  { iso: "2026-06-24", label: "Wed Jun 24", title: "Image Recognition II",   desc: "Tune your model, improve accuracy, and classify your own photos." },
-  { iso: "2026-06-25", label: "Thu Jun 25", title: "Showcase",               desc: "Demo your image recognition model live — families welcome." },
+  { iso: "2026-06-16", label: "Tue Jun 16", title: "What is AI?", desc: "Explore how AI works through fun demos — teach a computer to recognize drawings!" },
+  { iso: "2026-06-17", label: "Wed Jun 17", title: "Train Your First AI", desc: "Use Teachable Machine to train an AI that recognizes your hand gestures." },
+  { iso: "2026-06-18", label: "Thu Jun 18", title: "Image Recognition Project", desc: "Build an AI that can identify objects — like sorting recycling vs trash!" },
+  { iso: "2026-06-23", label: "Tue Jun 23", title: "Meet ChatGPT and AI Chatbots", desc: "Learn how chatbots work and build your own simple AI assistant." },
+  { iso: "2026-06-24", label: "Wed Jun 24", title: "Build Your AI Project", desc: "Choose your own AI project — image classifier, chatbot, or creative tool." },
+  { iso: "2026-06-25", label: "Thu Jun 25", title: "Showcase Day", desc: "Demo your AI creation live — impress your friends and family!" },
 ];
 
 export type Track = "pygame" | "ml";
 
 export function trackMeta(track: Track) {
   return track === "ml"
-    ? { name: "ML / AI", price: "$25 / week", total: "$75 total", color: "#0f766e", badge: "bg-teal-100 text-teal-700", curriculum: ML_CURRICULUM }
-    : { name: "Pygame", price: "$25 / week", total: "$75 total", color: "#ea580c", badge: "bg-amber-100 text-amber-700", curriculum: PYGAME_CURRICULUM };
+    ? { name: "ML / AI", price: "$25 / week", total: "$50 total", color: "#0f766e", badge: "bg-teal-100 text-teal-700", curriculum: ML_CURRICULUM }
+    : { name: "Pygame", price: "$25 / week", total: "$50 total", color: "#ea580c", badge: "bg-amber-100 text-amber-700", curriculum: PYGAME_CURRICULUM };
 }
 
 export function safeDateLabel(iso: string): string {

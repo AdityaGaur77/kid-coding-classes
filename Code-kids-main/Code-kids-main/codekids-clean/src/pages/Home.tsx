@@ -35,20 +35,20 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
   const details = isMl
     ? {
         trackLabel: "ML / AI TRACK",
-        title: "Build Intelligent AIs",
+        title: "Build Your Own AI",
         description:
-          "Learn decision trees, neural networks, and how LLMs work. Build image classifiers and understand how models are trained for real robotics use cases in class.",
+          "Train AI models that recognize images and gestures, explore chatbots, and build a creative AI project to show off to friends and family!",
         price: "$25",
         originalPrice: "$55",
-        cta: "Enroll in ML / AI →",
+        cta: "Enroll in AI Track →",
         age: "Ages 10+",
-        prereq: "Python basics included",
+        prereq: "No coding needed",
       }
     : {
         trackLabel: "PYGAME TRACK",
         title: "Build Games with Python",
         description:
-          "Master variables, loops, graphics, collision, and animation. Ship a completely custom playable game by the end of the track.",
+          "Learn to code while building a real playable game with characters, collisions, and sound effects!",
         price: "$25",
         originalPrice: "$45",
         cta: "Enroll in Pygame →",
@@ -84,7 +84,7 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
           {details.prereq}
         </span>
         <span className={`inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-bold ${cardTheme.metaPill}`}>
-          9 live classes
+          6 live classes
         </span>
       </div>
 
@@ -212,8 +212,8 @@ function QrToggle() {
 
 export function Home({ setView }: HomeProps) {
   const heroDetails = [
-    { icon: <CalendarDays className="w-4 h-4 text-blue-300" />, title: "June 9 – 25", sub: "Batch 1 · Summer 2026" },
-    { icon: <Clock className="w-4 h-4 text-blue-300" />, title: "Tue, Wed, Thu", sub: "9 live classes total" },
+    { icon: <CalendarDays className="w-4 h-4 text-blue-300" />, title: "June 2 – 25", sub: "Summer 2026" },
+    { icon: <Clock className="w-4 h-4 text-blue-300" />, title: "Tue, Wed, Thu", sub: "6 classes per track" },
     { icon: <Video className="w-4 h-4 text-blue-300" />, title: "Live on Zoom", sub: "Recordings included" },
   ];
 
@@ -283,11 +283,11 @@ export function Home({ setView }: HomeProps) {
                   <div className="flex items-center gap-3 text-xs text-white/70">
                     <span className="flex items-center gap-1.5">
                       <Video className="w-3.5 h-3.5" />
-                      9 live classes
+                      6 classes per track
                     </span>
                     <span className="flex items-center gap-1.5">
                       <CalendarDays className="w-3.5 h-3.5" />
-                      3 weeks
+                      2 weeks each
                     </span>
                   </div>
                 </div>
@@ -327,7 +327,7 @@ export function Home({ setView }: HomeProps) {
                     </div>
 
                     <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow">
-                      Learn variables, loops, graphics, animation, and game logic while building a real playable project.
+                      Learn to code while building a real playable game with characters, collisions, and sound!
                     </p>
                   </div>
 
@@ -355,12 +355,12 @@ export function Home({ setView }: HomeProps) {
                         Ages 10+
                       </span>
                       <span className="inline-flex items-center rounded-full border border-white/20 bg-white/5 px-2 py-0.5 text-[10px] font-semibold text-white/70">
-                        Python basics
+                        No coding needed
                       </span>
                     </div>
 
                     <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow">
-                      Learn how image classifiers, neural networks, and modern AI systems work by building a guided robotics-focused classifier project together.
+                      Train AI to recognize images, build chatbots, and create your own AI project to show off!
                     </p>
                   </div>
                 </div>
@@ -393,8 +393,9 @@ export function Home({ setView }: HomeProps) {
               <Clock className="w-5 h-5 text-blue-300" />
             </div>
             <div>
-              <div className="font-bold text-white text-base">Second Batch — July 7 to July 24</div>
+              <div className="font-bold text-white text-base">Second Batch Coming in July</div>
               <div className="text-slate-200 text-sm mt-0.5">
+                Stay tuned for Batch 2 dates!
               </div>
             </div>
           </div>
@@ -406,7 +407,7 @@ export function Home({ setView }: HomeProps) {
           <div className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-3">Choose A Track</div>
           <h2 className="font-serif text-4xl text-slate-900 max-w-xl leading-tight">The two options families compare most.</h2>
           <p className="mt-3 text-slate-500 max-w-2xl">
-            Both tracks follow the same calendar and live format. The main choice is whether your student wants to build a game or build an AI-powered robotics classifier project.
+            Pygame runs first (June 2-11), then AI (June 16-25). Pick one or take both! Each is 6 classes over 2 weeks.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-7">
             <CourseCard track="pygame" />
