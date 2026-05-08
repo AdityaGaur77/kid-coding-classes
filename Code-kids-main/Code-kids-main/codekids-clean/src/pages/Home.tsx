@@ -34,10 +34,10 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
 
   const details = isMl
     ? {
-        trackLabel: "ML / AI TRACK",
-        title: "Build Your Own AI",
+        trackLabel: "AI TRACK",
+        title: "AI Magic Wand",
         description:
-          "Train AI models that recognize images and gestures, explore chatbots, and build a creative AI project to show off to friends and family!",
+          "Train an AI to recognize your hand gestures and cast magic spells! Wave your hand to trigger fireworks, confetti, and lightning effects on screen.",
         price: "$25",
         originalPrice: "$55",
         cta: "Enroll in AI Track →",
@@ -46,9 +46,9 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
       }
     : {
         trackLabel: "PYGAME TRACK",
-        title: "Build Games with Python",
+        title: "Space Escape",
         description:
-          "Learn to code while building a real playable game with characters, collisions, and sound effects!",
+          "Build a complete space game! Pilot your ship through asteroid fields, collect power-ups, trigger explosions, and rack up a high score.",
         price: "$25",
         originalPrice: "$45",
         cta: "Enroll in Pygame →",
@@ -314,7 +314,7 @@ export function Home({ setView }: HomeProps) {
                     </div>
 
                     <h3 className="font-bold text-lg sm:text-xl leading-tight text-white mb-2">
-                      Build Games
+                      Space Escape
                     </h3>
                     
                     <div className="flex flex-wrap gap-1.5 mb-3">
@@ -327,7 +327,7 @@ export function Home({ setView }: HomeProps) {
                     </div>
 
                     <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow">
-                      Learn to code while building a real playable game with characters, collisions, and sound!
+                      Build a space game with asteroids, power-ups, explosions, and a high score system!
                     </p>
                   </div>
 
@@ -347,7 +347,7 @@ export function Home({ setView }: HomeProps) {
                     </div>
 
                     <h3 className="font-bold text-lg sm:text-xl leading-tight text-white mb-2">
-                      Build AIs
+                      AI Magic Wand
                     </h3>
                     
                     <div className="flex flex-wrap gap-1.5 mb-3">
@@ -360,7 +360,7 @@ export function Home({ setView }: HomeProps) {
                     </div>
 
                     <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow">
-                      Train AI to recognize images, build chatbots, and create your own AI project to show off!
+                      Train AI to recognize your gestures and cast magic spells with visual effects!
                     </p>
                   </div>
                 </div>
@@ -405,9 +405,9 @@ export function Home({ setView }: HomeProps) {
       <section className="py-16 bg-white">
         <div className="max-w-[1120px] mx-auto px-5">
           <div className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-3">Choose A Track</div>
-          <h2 className="font-serif text-4xl text-slate-900 max-w-xl leading-tight">The two options families compare most.</h2>
+          <h2 className="font-serif text-4xl text-slate-900 max-w-xl leading-tight">Two focused projects. One amazing showcase.</h2>
           <p className="mt-3 text-slate-500 max-w-2xl">
-            Pygame runs first (June 2-11), then AI (June 16-25). Pick one or take both! Each is 6 classes over 2 weeks.
+            Space Escape runs June 2-11, then AI Magic Wand runs June 16-25. Pick one or take both!
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-7">
             <CourseCard track="pygame" />
@@ -464,7 +464,7 @@ export function Home({ setView }: HomeProps) {
             ["Resource Library", "Helpful docs, tools, and links live in one place."],
             ["Flexible Payment", "Use simple PayPal or Zelle payment links or QR codes."],
             ["Beginner Friendly", "Designed for curious students who are just getting started."],
-            ["Project Based", "Every student ends with something real they built."],
+            ["Project Based", "Every student builds Space Escape or AI Magic Wand to show off."],
           ].map(([title, copy]) => (
             <div key={title} className="bg-white border border-slate-200 rounded-2xl p-5">
               <h3 className="font-bold text-slate-900">{title}</h3>

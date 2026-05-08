@@ -6,21 +6,21 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const PYGAME_CURRICULUM = [
-  { iso: "2026-06-02", label: "Tue Jun 2",  title: "Python + First Game Window", desc: "Learn variables, loops, and open your first Pygame window with shapes on screen." },
-  { iso: "2026-06-03", label: "Wed Jun 3",  title: "Animation and Player Controls", desc: "Make objects move smoothly and respond to keyboard input." },
-  { iso: "2026-06-04", label: "Thu Jun 4",  title: "Sprites and Collisions", desc: "Add character images, detect collisions, and build game logic." },
-  { iso: "2026-06-09", label: "Tue Jun 9",  title: "Scoring and Sound", desc: "Create a scoreboard, add sound effects, and polish your game." },
-  { iso: "2026-06-10", label: "Wed Jun 10", title: "Build Your Own Game", desc: "Design and build your own original game with guidance." },
-  { iso: "2026-06-11", label: "Thu Jun 11", title: "Showcase Day", desc: "Present your finished game live — friends and family welcome!" },
+  { iso: "2026-06-02", label: "Tue Jun 2",  title: "Launch Your Spaceship", desc: "Learn Python basics and draw your spaceship on screen with a starry background." },
+  { iso: "2026-06-03", label: "Wed Jun 3",  title: "Dodge the Asteroids", desc: "Add keyboard controls to fly your ship and spawn asteroids to dodge." },
+  { iso: "2026-06-04", label: "Thu Jun 4",  title: "Explosions and Collisions", desc: "Detect crashes, trigger explosion animations, and add extra lives." },
+  { iso: "2026-06-09", label: "Tue Jun 9",  title: "Power-Ups and Scoring", desc: "Collect stars for points, add shields and speed boosts, display your score." },
+  { iso: "2026-06-10", label: "Wed Jun 10", title: "Sound and Polish", desc: "Add laser sounds, explosions, background music, and a game over screen." },
+  { iso: "2026-06-11", label: "Thu Jun 11", title: "Showcase Day", desc: "Play your finished Space Escape game live for friends and family!" },
 ];
 
 export const ML_CURRICULUM = [
-  { iso: "2026-06-16", label: "Tue Jun 16", title: "What is AI?", desc: "Explore how AI works through fun demos — teach a computer to recognize drawings!" },
-  { iso: "2026-06-17", label: "Wed Jun 17", title: "Train Your First AI", desc: "Use Teachable Machine to train an AI that recognizes your hand gestures." },
-  { iso: "2026-06-18", label: "Thu Jun 18", title: "Image Recognition Project", desc: "Build an AI that can identify objects — like sorting recycling vs trash!" },
-  { iso: "2026-06-23", label: "Tue Jun 23", title: "Meet ChatGPT and AI Chatbots", desc: "Learn how chatbots work and build your own simple AI assistant." },
-  { iso: "2026-06-24", label: "Wed Jun 24", title: "Build Your AI Project", desc: "Choose your own AI project — image classifier, chatbot, or creative tool." },
-  { iso: "2026-06-25", label: "Thu Jun 25", title: "Showcase Day", desc: "Demo your AI creation live — impress your friends and family!" },
+  { iso: "2026-06-16", label: "Tue Jun 16", title: "Discover AI Magic", desc: "Play with AI demos and learn how computers can recognize images and gestures." },
+  { iso: "2026-06-17", label: "Wed Jun 17", title: "Train Your First Spell", desc: "Use Teachable Machine to teach your AI to recognize your first magic gesture." },
+  { iso: "2026-06-18", label: "Thu Jun 18", title: "Build Your Spell Book", desc: "Train 3-4 different gesture spells — each one triggers a different magic effect!" },
+  { iso: "2026-06-23", label: "Tue Jun 23", title: "Create the Magic Effects", desc: "Connect your spells to awesome visual effects — fireworks, confetti, lightning!" },
+  { iso: "2026-06-24", label: "Wed Jun 24", title: "Polish Your Wand", desc: "Add sound effects, customize your spells, and practice your wizard performance." },
+  { iso: "2026-06-25", label: "Thu Jun 25", title: "Showcase Day", desc: "Perform your AI magic show live — cast spells and amaze your family!" },
 ];
 
 export type Track = "pygame" | "ml";

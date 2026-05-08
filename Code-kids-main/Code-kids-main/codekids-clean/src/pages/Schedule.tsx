@@ -50,8 +50,8 @@ export function Schedule() {
     <div className="py-16">
       <div className="max-w-[900px] mx-auto px-5">
         <div className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-3">Schedule</div>
-        <h1 className="font-serif text-4xl sm:text-5xl text-slate-900 leading-tight">6 classes. 2 weeks. One real project.</h1>
-        <p className="mt-3 text-slate-500 max-w-xl">Pygame runs June 2-11, then AI runs June 16-25. Every track ends with a live showcase.</p>
+        <h1 className="font-serif text-4xl sm:text-5xl text-slate-900 leading-tight">6 classes. 2 weeks. One epic project.</h1>
+        <p className="mt-3 text-slate-500 max-w-xl">Build Space Escape (June 2-11) or AI Magic Wand (June 16-25). Every track ends with a live showcase!</p>
 
         <div className="flex gap-3 flex-wrap mt-8 mb-8">
           <button
@@ -59,14 +59,14 @@ export function Schedule() {
             className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${track === "pygame" ? "bg-amber-500 text-white shadow-sm" : "bg-white border border-slate-200 text-slate-700 hover:bg-amber-50 hover:border-amber-200"}`}
             onClick={() => setTrack("pygame")}
           >
-            Pygame — Game Dev
+            Space Escape — Pygame
           </button>
           <button
             data-testid="btn-track-ml"
             className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${track === "ml" ? "bg-teal-600 text-white shadow-sm" : "bg-white border border-slate-200 text-slate-700 hover:bg-teal-50 hover:border-teal-200"}`}
             onClick={() => setTrack("ml")}
           >
-            ML / AI — Machine Learning
+            AI Magic Wand — AI Track
           </button>
         </div>
 
@@ -134,9 +134,9 @@ export function Schedule() {
 
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            ["6 lessons", "Per track, Tue / Wed / Thu"],
-            ["2 weeks", "Per track, 1.5 hours each class"],
-            ["Live showcase", "Final class is a live demo day"]
+            ["6 lessons", "Tue / Wed / Thu, 1.5 hours each"],
+            ["1 project", "Space Escape or AI Magic Wand"],
+            ["Live showcase", "Show off your creation to family!"]
           ].map(([title, sub]) => (
             <div key={title} className="bg-white border border-slate-200 rounded-xl p-4 text-center">
               <div className="font-serif text-2xl text-slate-900">{title}</div>
