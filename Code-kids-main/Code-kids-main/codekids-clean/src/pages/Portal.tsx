@@ -93,7 +93,7 @@ export function Portal() {
           {/* Welcome header */}
           <div className={`bg-gradient-to-br ${theme.bg} rounded-3xl p-6 sm:p-8 text-white mb-6 shadow-lg`}>
             <div className="text-4xl mb-2">{theme.icon}</div>
-            <div className="font-serif text-3xl sm:text-4xl leading-tight">Hey, {student.name}! 👋</div>
+            <div className="font-serif text-3xl sm:text-4xl leading-tight">Hey, {student.name}!</div>
             <div className="text-white/80 text-sm mt-1">{theme.name} · June 9 – June 25, 2026</div>
             <div className="flex gap-2 mt-4 flex-wrap">
               <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${student.paid ? "bg-white/20 text-white" : "bg-white/10 text-white/80"}`}>
@@ -105,11 +105,7 @@ export function Portal() {
             </div>
           </div>
 
-          {settings.announcement && (
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-2xl text-blue-700 text-sm mb-6 font-medium">
-              📢 {settings.announcement}
-            </div>
-          )}
+          
 
           {!accessReady ? (
             /* ── Pending state ── */
