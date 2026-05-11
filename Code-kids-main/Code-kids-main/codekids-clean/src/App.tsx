@@ -9,6 +9,7 @@ import { Schedule } from "@/pages/Schedule";
 import { Portal } from "@/pages/Portal";
 import { Admin } from "@/pages/Admin";
 import { AdminModal } from "@/components/AdminModal";
+import { Analytics } from "@vercel/analytics/react";
 
 const ADMIN_PASS = "admin2026";
 
@@ -79,6 +80,7 @@ export default function App() {
           />
         )}
         <Toaster />
+        <Analytics />
       </TooltipProvider>
     </WouterRouter>
   );
