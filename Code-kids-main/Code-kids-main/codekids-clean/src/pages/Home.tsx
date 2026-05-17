@@ -43,6 +43,7 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
         cta: "Enroll in AI Track →",
         age: "Ages 10+",
         prereq: "No coding needed",
+        time: "3:00 – 4:30 PM PST",
       }
     : {
         trackLabel: "PYTHON TRACK",
@@ -54,6 +55,7 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
         cta: "Enroll in Python Track →",
         age: "Ages 8+",
         prereq: "No experience needed",
+        time: "2:00 – 2:30 PM PST",
       };
 
   return (
@@ -85,6 +87,10 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
         </span>
         <span className={`inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-bold ${cardTheme.metaPill}`}>
           6 live classes
+        </span>
+        <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold ${cardTheme.metaPill}`}>
+          <Clock className="w-3 h-3" />
+          {details.time}
         </span>
       </div>
 
@@ -123,7 +129,7 @@ function MentorSection() {
             </p>
             <div className="flex gap-3 mt-7">
               <a
-                href="https://github.com/"
+                href="https://github.com/AdityaGaur77"
                 target="_blank"
                 rel="noopener noreferrer"
                 data-testid="link-github"
@@ -133,7 +139,7 @@ function MentorSection() {
                 GitHub
               </a>
               <a
-                href="https://linkedin.com/"
+                href="https://www.linkedin.com/in/aditya-gaur-b42a46392/"
                 target="_blank"
                 rel="noopener noreferrer"
                 data-testid="link-linkedin"
@@ -272,9 +278,6 @@ export function Home({ setView }: HomeProps) {
                 {/* Header Row */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center rounded-full px-3 py-1 text-xs sm:text-sm font-bold bg-white/20 text-white border border-white/20">
-                      At a Glance
-                    </span>
                     <span className="inline-flex items-center gap-1.5 text-xs font-bold text-orange-300 bg-orange-500/20 border border-orange-400/30 rounded-full px-3 py-1">
                       <Zap className="w-3 h-3" />
                       Early bird ends June 1
@@ -326,9 +329,14 @@ export function Home({ setView }: HomeProps) {
                       </span>
                     </div>
 
-                    <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow">
+                    <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow mb-3">
                       Learn Python by building a space arcade game with asteroids, power-ups, and explosions!
                     </p>
+
+                    <div className="flex items-center gap-1.5 text-teal-300 text-xs font-semibold mt-auto pt-2 border-t border-white/10">
+                      <Clock className="w-3.5 h-3.5" />
+                      2:00 – 2:30 PM PST
+                    </div>
                   </div>
 
                   {/* ML Card */}
@@ -359,25 +367,33 @@ export function Home({ setView }: HomeProps) {
                       </span>
                     </div>
 
-                    <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow">
+                    <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow mb-3">
                       Train your own AI to recognize gestures and trigger cool visual effects!
                     </p>
+
+                    <div className="flex items-center gap-1.5 text-blue-300 text-xs font-semibold mt-auto pt-2 border-t border-white/10">
+                      <Clock className="w-3.5 h-3.5" />
+                      3:00 – 4:30 PM PST
+                    </div>
                   </div>
                 </div>
 
-                {/* Footer Features */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-5 pt-4 border-t border-white/10">
-                  {[
-                    "Live Zoom + recordings",
-                    "Student portal access",
-                    "PayPal or Zelle",
-                    "Beginner-friendly",
-                  ].map((item) => (
-                    <div key={item} className="flex items-center gap-2 text-[10px] sm:text-xs font-medium text-white/50">
-                      <div className="w-1 h-1 rounded-full bg-teal-400 shrink-0"></div>
-                      {item}
+                {/* Class Time Cards */}
+                <div className="grid grid-cols-2 gap-3 mt-5 pt-4 border-t border-white/10">
+                  <div className="flex items-center gap-3 bg-teal-500/10 border border-teal-400/20 rounded-xl px-4 py-3">
+                    <Clock className="w-5 h-5 text-teal-300 shrink-0" />
+                    <div>
+                      <div className="text-xs font-bold text-teal-300 uppercase tracking-wide">Python Class</div>
+                      <div className="text-sm font-semibold text-white">2:00 – 2:30 PM PST</div>
                     </div>
-                  ))}
+                  </div>
+                  <div className="flex items-center gap-3 bg-blue-500/10 border border-blue-400/20 rounded-xl px-4 py-3">
+                    <Clock className="w-5 h-5 text-blue-300 shrink-0" />
+                    <div>
+                      <div className="text-xs font-bold text-blue-300 uppercase tracking-wide">AI Class</div>
+                      <div className="text-sm font-semibold text-white">3:00 – 4:30 PM PST</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
