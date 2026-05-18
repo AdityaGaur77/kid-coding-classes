@@ -43,7 +43,7 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
         cta: "Enroll in AI Track →",
         age: "Ages 10+",
         prereq: "No coding needed",
-        time: "4:00 – 5:30 PM PST",
+        time: "2:00 – 3:30 PM PST",
       }
     : {
         trackLabel: "PYTHON TRACK",
@@ -373,25 +373,18 @@ export function Home({ setView }: HomeProps) {
 
                     <div className="flex items-center gap-1.5 text-blue-300 text-xs font-semibold mt-auto pt-2 border-t border-white/10">
                       <Clock className="w-3.5 h-3.5" />
-                      4:00 – 5:30 PM PST
+                      2:00 – 3:30 PM PST
                     </div>
                   </div>
                 </div>
 
-                {/* Class Time Cards */}
-                <div className="grid grid-cols-2 gap-3 mt-5 pt-4 border-t border-white/10">
-                  <div className="flex items-center gap-3 bg-teal-500/10 border border-teal-400/20 rounded-xl px-4 py-3">
+                {/* Class Time Card */}
+                <div className="mt-5 pt-4 border-t border-white/10">
+                  <div className="flex items-center gap-3 bg-teal-500/10 border border-teal-400/20 rounded-xl px-4 py-3 w-full">
                     <Clock className="w-5 h-5 text-teal-300 shrink-0" />
                     <div>
-                      <div className="text-xs font-bold text-teal-300 uppercase tracking-wide">Python Class</div>
+                      <div className="text-xs font-bold text-teal-300 uppercase tracking-wide">Both Classes</div>
                       <div className="text-sm font-semibold text-white">2:00 – 3:30 PM PST</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 bg-blue-500/10 border border-blue-400/20 rounded-xl px-4 py-3">
-                    <Clock className="w-5 h-5 text-blue-300 shrink-0" />
-                    <div>
-                      <div className="text-xs font-bold text-blue-300 uppercase tracking-wide">AI Class</div>
-                      <div className="text-sm font-semibold text-white">4:00 – 5:30 PM PST</div>
                     </div>
                   </div>
                 </div>
