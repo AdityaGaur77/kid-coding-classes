@@ -1,7 +1,6 @@
 import { SiGithub } from "react-icons/si";
 import { Trophy, Star, Users, Rocket, Linkedin, Clock, Zap, CalendarDays, Video } from "lucide-react";
 import { SignupForm } from "@/components/SignupForm";
-import { useState } from "react";
 
 
 
@@ -190,28 +189,20 @@ function MentorSection() {
   );
 }
 
-function QrToggle() {
-  const [open, setOpen] = useState(false);
+function QrCodes() {
   return (
     <div className="mt-5">
-      <button
-        onClick={() => setOpen(!open)}
-        className="text-sm font-bold text-blue-600 underline"
-      >
-        {open ? "Hide payment QR codes" : "Already registered? View payment QR codes"}
-      </button>
-      {open && (
-        <div className="grid grid-cols-2 gap-3 mt-4">
-          <div className="border border-slate-200 rounded-2xl p-3 bg-white">
-            <div className="font-bold text-slate-900 text-sm mb-2">PayPal</div>
-            <img src="/paypal.jpeg" alt="PayPal QR code" className="w-full aspect-square object-cover rounded-xl border border-slate-200" />
-          </div>
-          <div className="border border-slate-200 rounded-2xl p-3 bg-white">
-            <div className="font-bold text-slate-900 text-sm mb-2">Zelle</div>
-            <img src="/zelle.jpeg" alt="Zelle QR code" className="w-full aspect-square object-cover rounded-xl border border-slate-200" />
-          </div>
+      <div className="text-sm font-bold text-slate-700 mb-3">Scan to pay</div>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="border border-slate-200 rounded-2xl p-3 bg-white">
+          <div className="font-bold text-slate-900 text-sm mb-2">PayPal</div>
+          <img src="/paypal.jpeg" alt="PayPal QR code" className="w-full aspect-square object-cover rounded-xl border border-slate-200" />
         </div>
-      )}
+        <div className="border border-slate-200 rounded-2xl p-3 bg-white">
+          <div className="font-bold text-slate-900 text-sm mb-2">Zelle</div>
+          <img src="/zelle.jpeg" alt="Zelle QR code" className="w-full aspect-square object-cover rounded-xl border border-slate-200" />
+        </div>
+      </div>
     </div>
   );
 }
@@ -456,7 +447,7 @@ export function Home({ setView }: HomeProps) {
     ))}
   </div>
 
-  <QrToggle />
+  <QrCodes />
 
   <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-700 text-sm">
     Please include the student name in the payment note so the registration can be matched quickly.
