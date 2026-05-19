@@ -127,7 +127,7 @@ function MentorSection() {
               Beyond teaching, Aditya competes at the highest levels of algorithmic programming, builds award-winning projects, and runs a school coding club from the ground up. Every class he teaches is shaped by that same hands-on energy.
             </p>
             <div className="flex gap-3 mt-7">
-              
+  
                 href="https://github.com/AdityaGaur77"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -137,7 +137,7 @@ function MentorSection() {
                 <SiGithub className="w-4 h-4" />
                 GitHub
               </a>
-              
+  
                 href="https://www.linkedin.com/in/aditya-gaur-b42a46392/"
                 target="_blank"
                 rel="noopener noreferrer"
