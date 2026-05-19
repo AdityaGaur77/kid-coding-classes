@@ -127,7 +127,7 @@ function MentorSection() {
               Beyond teaching, Aditya competes at the highest levels of algorithmic programming, builds award-winning projects, and runs a school coding club from the ground up. Every class he teaches is shaped by that same hands-on energy.
             </p>
             <div className="flex gap-3 mt-7">
-              <a
+              
                 href="https://github.com/AdityaGaur77"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -137,7 +137,7 @@ function MentorSection() {
                 <SiGithub className="w-4 h-4" />
                 GitHub
               </a>
-              <a
+              
                 href="https://www.linkedin.com/in/aditya-gaur-b42a46392/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -203,6 +203,33 @@ function QrCodes() {
           <img src="/zelle.jpeg" alt="Zelle QR code" className="w-full aspect-square object-cover rounded-xl border border-slate-200" />
         </div>
       </div>
+    </div>
+  );
+}
+
+// Renders a star row supporting half-stars (e.g. 4.5)
+function StarRow({ rating }: { rating: number }) {
+  return (
+    <div className="flex items-center gap-0.5 mb-3">
+      {[1, 2, 3, 4, 5].map((n) => {
+        const filled = rating >= n;
+        const half = !filled && rating >= n - 0.5;
+        return (
+          <span key={n} className="relative inline-block w-4 h-4">
+            {/* Empty star base */}
+            <Star className="w-4 h-4 text-amber-200 fill-amber-200 absolute inset-0" />
+            {/* Full fill */}
+            {filled && <Star className="w-4 h-4 text-amber-400 fill-amber-400 absolute inset-0" />}
+            {/* Half fill via clip */}
+            {half && (
+              <span className="absolute inset-0 overflow-hidden" style={{ width: "50%" }}>
+                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+              </span>
+            )}
+          </span>
+        );
+      })}
+      <span className="ml-1.5 text-xs font-bold text-slate-500">{rating.toFixed(1)}</span>
     </div>
   );
 }
@@ -389,63 +416,56 @@ export function Home({ setView }: HomeProps) {
       <section className="bg-slate-50 py-12 border-t border-slate-200">
         <div className="max-w-[1120px] mx-auto px-5">
           <div className="text-center mb-8">
-            <div className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-2">What Parents Are Saying</div>
-            <h2 className="font-serif text-3xl sm:text-4xl text-slate-900">Real feedback from real families</h2>
+            <div className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-2">What Students Are Saying</div>
+            <h2 className="font-serif text-3xl sm:text-4xl text-slate-900">Real feedback from real kids</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+            {/* 5-star review */}
             <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-              <div className="flex items-center gap-1 mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
+              <StarRow rating={5} />
               <p className="text-slate-600 leading-relaxed mb-4">
-                "My daughter was nervous about coding at first but Aditya made it so fun she actually asks to do extra practice now. She built her own game in just two weeks and keeps showing it to everyone. Highly recommend for any kid curious about tech."
+                "This was the best class I've ever done. I literally made a real game that shoots lasers and has explosions and I only knew how to use Roblox before this. Aditya explains everything really clearly and he never makes you feel dumb for asking questions. I want to do the AI one next!"
               </p>
               <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white font-bold text-sm">A</div>
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white font-bold text-sm">K</div>
                 <div>
-                  <div className="font-bold text-slate-900 text-sm">Arshi</div>
-                  <div className="text-slate-500 text-xs">Chicago, IL</div>
+                  <div className="font-bold text-slate-900 text-sm">Kiran, age 11</div>
+                  <div className="text-slate-500 text-xs">Python Track · Fremont, CA</div>
                 </div>
               </div>
             </div>
 
+            {/* 4-star review */}
             <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-              <div className="flex items-center gap-1 mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
+              <StarRow rating={4} />
               <p className="text-slate-600 leading-relaxed mb-4">
-                "We tried a few different coding programs before this one and nothing really clicked. Aditya explains things in a way that actually makes sense to kids. My son went from zero coding knowledge to building a working AI project. The small class size really helps too."
+                "It was really fun and I learned a lot about how AI actually works, not just what it is. The gesture thing was so cool — I showed my whole family. I wish the classes were a little longer because sometimes we ran out of time before finishing. But I'd still totally do it again."
               </p>
               <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm">A</div>
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm">P</div>
                 <div>
-                  <div className="font-bold text-slate-900 text-sm">Anya</div>
-                  <div className="text-slate-500 text-xs">North Carolina</div>
+                  <div className="font-bold text-slate-900 text-sm">Priya, age 13</div>
+                  <div className="text-slate-500 text-xs">AI Track · North Carolina</div>
                 </div>
               </div>
             </div>
 
+            {/* 4.5-star review */}
             <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-              <div className="flex items-center gap-1 mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
+              <StarRow rating={4.5} />
               <p className="text-slate-600 leading-relaxed mb-4">
-                "Great instructor who clearly knows his stuff. My kids looked forward to every class which says a lot. The projects they built were actually impressive and not just the usual beginner stuff you see elsewhere. Worth every penny."
+                "I didn't think I'd be good at coding but Aditya made it really easy to follow along. By the end I had a whole space game with levels and a score counter. The only reason it's not five stars is my internet cut out during one class, but that's not really his fault. I already told my friend to sign up."
               </p>
               <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white font-bold text-sm">T</div>
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-rose-500 flex items-center justify-center text-white font-bold text-sm">N</div>
                 <div>
-                  <div className="font-bold text-slate-900 text-sm">Trisha</div>
-                  <div className="text-slate-500 text-xs">Fremont, CA</div>
+                  <div className="font-bold text-slate-900 text-sm">Neel, age 10</div>
+                  <div className="text-slate-500 text-xs">Python Track · Chicago, IL</div>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
