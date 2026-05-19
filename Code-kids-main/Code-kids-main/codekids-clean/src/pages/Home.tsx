@@ -394,6 +394,71 @@ export function Home({ setView }: HomeProps) {
         </div>
       </section>
 
+      {/* Testimonials */}
+      <section className="bg-slate-50 py-12 border-t border-slate-200">
+        <div className="max-w-[1120px] mx-auto px-5">
+          <div className="text-center mb-8">
+            <div className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-2">What Parents Are Saying</div>
+            <h2 className="font-serif text-3xl sm:text-4xl text-slate-900">Real feedback from real families</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+              <div className="flex items-center gap-1 mb-3">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                ))}
+              </div>
+              <p className="text-slate-600 leading-relaxed mb-4">
+                "My daughter was nervous about coding at first but Aditya made it so fun she actually asks to do extra practice now. She built her own game in just two weeks and keeps showing it to everyone. Highly recommend for any kid curious about tech."
+              </p>
+              <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white font-bold text-sm">A</div>
+                <div>
+                  <div className="font-bold text-slate-900 text-sm">Arshi</div>
+                  <div className="text-slate-500 text-xs">Chicago, IL</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+              <div className="flex items-center gap-1 mb-3">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                ))}
+              </div>
+              <p className="text-slate-600 leading-relaxed mb-4">
+                "We tried a few different coding programs before this one and nothing really clicked. Aditya explains things in a way that actually makes sense to kids. My son went from zero coding knowledge to building a working AI project. The small class size really helps too."
+              </p>
+              <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm">A</div>
+                <div>
+                  <div className="font-bold text-slate-900 text-sm">Anya</div>
+                  <div className="text-slate-500 text-xs">North Carolina</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+              <div className="flex items-center gap-1 mb-3">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                ))}
+              </div>
+              <p className="text-slate-600 leading-relaxed mb-4">
+                "Great instructor who clearly knows his stuff. My kids looked forward to every class which says a lot. The projects they built were actually impressive and not just the usual beginner stuff you see elsewhere. Worth every penny."
+              </p>
+              <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white font-bold text-sm">T</div>
+                <div>
+                  <div className="font-bold text-slate-900 text-sm">Trisha</div>
+                  <div className="text-slate-500 text-xs">Fremont, CA</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Second Batch Notice */}
       <section className="bg-slate-900 text-white py-5 border-t border-white/10">
         <div className="max-w-[1120px] mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
