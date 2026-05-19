@@ -402,7 +402,7 @@ export function Home({ setView }: HomeProps) {
                 ))}
               </div>
               <p className="text-slate-600 leading-relaxed mb-4">
-                "I built my own space game in two weeks!! Aditya makes everything so easy to understand. Best class I've ever taken."
+                "I was actually able to build things with results in just 2 weeks! All the help and external resources were also fantastic!"
               </p>
               <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white font-bold text-sm">A</div>
@@ -427,7 +427,7 @@ export function Home({ setView }: HomeProps) {
                 </div>
               </div>
               <p className="text-slate-600 leading-relaxed mb-4">
-                "The AI class was so cool — I trained my own model to recognize my hand! Would give 5 stars but I wish it was longer."
+                "The AI class was so cool! I also loved how I could transition from his beginner classes to his advanced ones easily!"
               </p>
               <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm">A</div>
@@ -447,7 +447,7 @@ export function Home({ setView }: HomeProps) {
                 <Star className="w-4 h-4 fill-amber-200 text-amber-200" />
               </div>
               <p className="text-slate-600 leading-relaxed mb-4">
-                "Really fun and I actually learned stuff. Aditya is a great teacher. Sometimes I wanted to go faster but overall super worth it!"
+                "Really fun and I actually learned stuff. Aditya is a great teacher. Sometimes I wanted to go faster, but overall super worth it!"
               </p>
               <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white font-bold text-sm">T</div>
