@@ -389,10 +389,12 @@ export function Home({ setView }: HomeProps) {
       <section className="bg-slate-50 py-12 border-t border-slate-200">
         <div className="max-w-[1120px] mx-auto px-5">
           <div className="text-center mb-8">
-            <div className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-2">What Parents Are Saying</div>
-            <h2 className="font-serif text-3xl sm:text-4xl text-slate-900">Real feedback from real families</h2>
+            <div className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-2">What Students Are Saying</div>
+            <h2 className="font-serif text-3xl sm:text-4xl text-slate-900">Real feedback from real kids</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+            {/* 5 stars */}
             <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
               <div className="flex items-center gap-1 mb-3">
                 {[...Array(5)].map((_, i) => (
@@ -400,7 +402,7 @@ export function Home({ setView }: HomeProps) {
                 ))}
               </div>
               <p className="text-slate-600 leading-relaxed mb-4">
-                "My daughter was nervous about coding at first but Aditya made it so fun she actually asks to do extra practice now. She built her own game in just two weeks and keeps showing it to everyone. Highly recommend for any kid curious about tech."
+                "I built my own space game in two weeks!! Aditya makes everything so easy to understand. Best class I've ever taken."
               </p>
               <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-white font-bold text-sm">A</div>
@@ -411,14 +413,21 @@ export function Home({ setView }: HomeProps) {
               </div>
             </div>
 
+            {/* 4.5 stars */}
             <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
               <div className="flex items-center gap-1 mb-3">
-                {[...Array(5)].map((_, i) => (
+                {[...Array(4)].map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                 ))}
+                <div className="relative inline-block w-4 h-4">
+                  <Star className="w-4 h-4 fill-amber-200 text-amber-200" />
+                  <div className="absolute inset-0 overflow-hidden w-1/2">
+                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  </div>
+                </div>
               </div>
               <p className="text-slate-600 leading-relaxed mb-4">
-                "We tried a few different coding programs before this one and nothing really clicked. Aditya explains things in a way that actually makes sense to kids. My son went from zero coding knowledge to building a working AI project. The small class size really helps too."
+                "The AI class was so cool — I trained my own model to recognize my hand! Would give 5 stars but I wish it was longer."
               </p>
               <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm">A</div>
@@ -429,14 +438,16 @@ export function Home({ setView }: HomeProps) {
               </div>
             </div>
 
+            {/* 4 stars */}
             <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
               <div className="flex items-center gap-1 mb-3">
-                {[...Array(5)].map((_, i) => (
+                {[...Array(4)].map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                 ))}
+                <Star className="w-4 h-4 fill-amber-200 text-amber-200" />
               </div>
               <p className="text-slate-600 leading-relaxed mb-4">
-                "Great instructor who clearly knows his stuff. My kids looked forward to every class which says a lot. The projects they built were actually impressive and not just the usual beginner stuff you see elsewhere. Worth every penny."
+                "Really fun and I actually learned stuff. Aditya is a great teacher. Sometimes I wanted to go faster but overall super worth it!"
               </p>
               <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white font-bold text-sm">T</div>
@@ -446,6 +457,7 @@ export function Home({ setView }: HomeProps) {
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
