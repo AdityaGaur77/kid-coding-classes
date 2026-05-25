@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import {
-  fbGetStudents, fbGetSettings, fbAddStudent, fbFindStudentByEmail,
-  fbUpdateStudent, fbDeleteStudent, fbUpdateSettings, getFirebaseError,
+  fbGetStudents, fbGetSettings, fbAddStudent,
+  fbUpdateStudent, fbDeleteStudent, fbUpdateSettings, fbSetPinForEmail, getFirebaseError,
   DEFAULT_SETTINGS, type Student, type Settings
 } from "@/lib/firebase";
 import { trackMeta, type Track } from "@/lib/utils";
@@ -60,12 +60,19 @@ export function Admin({ onExit }: AdminProps) {
   async function addStudent() {
     if (!studentForm.name || !studentForm.email) { setMessage("Name and email are required."); return; }
     try {
-      const existing = await fbFindStudentByEmail(studentForm.email);
-      if (existing) { setMessage("That email is already registered."); return; }
       await fbAddStudent({ ...studentForm, source: "manual", registrationStatus: studentForm.paid ? "approved" : "payment-pending" });
       setStudentForm({ name: "", email: "", parentName: "", age: "", track: "pygame", paid: false, notes: "" });
       setMessage("Student added.");
       loadData();
+    } catch (error) { setMessage(getFirebaseError(error)); }
+  }
+
+  async function generatePin(email: string) {
+    const newPin = String(Math.floor(1000 + Math.random() * 9000));
+    try {
+      await fbSetPinForEmail(email, newPin);
+      setStudents((prev) => prev.map((s) => s.email === email ? { ...s, pin: newPin } : s));
+      setMessage(`PIN for ${email} set to ${newPin}. Copy it and email the parent.`);
     } catch (error) { setMessage(getFirebaseError(error)); }
   }
 
@@ -221,7 +228,7 @@ export function Admin({ onExit }: AdminProps) {
                 <table className="w-full border-collapse">
                   <thead>
                     <tr>
-                      {["Student", "Contact", "Track", "Status", "Payment", "Source", "Actions"].map((h) => (
+                      {["Student", "Contact", "Track", "Status", "Payment", "PIN", "Source", "Actions"].map((h) => (
                         <th key={h} className="text-left p-3 text-xs text-slate-400 uppercase tracking-wide border-b border-slate-100">{h}</th>
                       ))}
                     </tr>
@@ -257,6 +264,16 @@ export function Admin({ onExit }: AdminProps) {
                           <button className={`text-xs font-bold px-3 py-1.5 rounded-lg ${student.paid ? "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50" : "bg-slate-900 text-white hover:bg-slate-800"}`} onClick={() => togglePaid(student)}>
                             {student.paid ? "Mark Unpaid" : "Mark Paid"}
                           </button>
+                        </td>
+                        <td className="p-3 border-b border-slate-100">
+                          {student.pin ? (
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono font-bold text-sm text-slate-900 bg-slate-100 rounded-lg px-2.5 py-1">{student.pin}</span>
+                              <button className="text-xs font-bold border border-slate-200 bg-white text-slate-700 px-2 py-1 rounded-lg hover:bg-slate-50" onClick={() => generatePin(student.email)}>Reset</button>
+                            </div>
+                          ) : (
+                            <button className="text-xs font-bold bg-blue-600 text-white px-2.5 py-1.5 rounded-lg hover:bg-blue-700" onClick={() => generatePin(student.email)}>Generate</button>
+                          )}
                         </td>
                         <td className="p-3 border-b border-slate-100">
                           <span className="text-xs font-bold bg-slate-100 text-slate-600 rounded-full px-2.5 py-1">{student.source}</span>

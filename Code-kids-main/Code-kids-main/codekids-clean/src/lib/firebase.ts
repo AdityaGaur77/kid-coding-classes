@@ -93,6 +93,7 @@ export type Student = {
   parentName: string;
   source: string;
   registrationStatus: string;
+  pin?: string;
 };
 
 function normalizeStudent(doc: { id: string } & Record<string, unknown>): Student {
@@ -106,7 +107,8 @@ function normalizeStudent(doc: { id: string } & Record<string, unknown>): Studen
     age: (doc["age"] as string) || "",
     parentName: (doc["parentName"] as string) || "",
     source: (doc["source"] as string) || "manual",
-    registrationStatus: (doc["registrationStatus"] as string) || (doc["paid"] ? "approved" : "payment-pending")
+    registrationStatus: (doc["registrationStatus"] as string) || (doc["paid"] ? "approved" : "payment-pending"),
+    pin: (doc["pin"] as string) || undefined,
   };
 }
 
@@ -116,11 +118,24 @@ export async function fbGetStudents(): Promise<Student[]> {
   return snap.docs.map((d) => normalizeStudent({ id: d.id, ...d.data() }));
 }
 
-export async function fbFindStudentByEmail(email: string): Promise<Student | null> {
+// Returns ALL students for a given email (handles multiple kids per family)
+export async function fbFindStudentsByEmail(email: string): Promise<Student[]> {
   const firestore = ensureFirebase();
-  const snap = await firestore.collection("students").where("email", "==", email.toLowerCase().trim()).limit(1).get();
-  if (snap.empty) return null;
-  return normalizeStudent({ id: snap.docs[0].id, ...snap.docs[0].data() });
+  const snap = await firestore.collection("students").where("email", "==", email.toLowerCase().trim()).get();
+  if (snap.empty) return [];
+  return snap.docs.map((d) => normalizeStudent({ id: d.id, ...d.data() }));
+}
+
+export async function fbFindStudentByEmail(email: string): Promise<Student | null> {
+  const students = await fbFindStudentsByEmail(email);
+  return students.length > 0 ? students[0] : null;
+}
+
+// Sets the same 4-digit PIN on every student record that shares the given email
+export async function fbSetPinForEmail(email: string, pin: string): Promise<void> {
+  const firestore = ensureFirebase();
+  const snap = await firestore.collection("students").where("email", "==", email.toLowerCase().trim()).get();
+  await Promise.all(snap.docs.map((d) => firestore.collection("students").doc(d.id).set({ pin }, { merge: true })));
 }
 
 export async function fbAddStudent(data: Omit<Student, "id">): Promise<void> {

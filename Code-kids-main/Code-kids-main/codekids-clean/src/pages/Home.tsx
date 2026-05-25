@@ -1,5 +1,5 @@
 import { SiGithub } from "react-icons/si";
-import { Trophy, Star, Users, Rocket, Linkedin, Clock, Zap, CalendarDays, Video } from "lucide-react";
+import { Trophy, Star, Users, Rocket, Linkedin, Clock, CalendarDays, Video } from "lucide-react";
 import { SignupForm } from "@/components/SignupForm";
 
 
@@ -38,7 +38,6 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
         description:
           "Learn how AI works by training your own model to recognize hand gestures. Build an interactive app that triggers cool visual effects when you wave, point, or make a fist!",
         price: "$25",
-        originalPrice: "$55",
         cta: "Enroll in AI Track →",
         age: "Ages 10+",
         prereq: "No coding needed",
@@ -50,7 +49,6 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
         description:
           "Learn Python by building a complete space arcade game. Code your spaceship, dodge asteroids, collect power-ups, and add explosions and sound effects!",
         price: "$25",
-        originalPrice: "$45",
         cta: "Enroll in Python Track →",
         age: "Ages 8+",
         prereq: "No experience needed",
@@ -67,7 +65,6 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
         </div>
 <div className="text-right shrink-0">
           <div className="flex items-baseline gap-2 justify-end">
-            <span className="text-slate-400 text-xl line-through">{details.originalPrice}</span>
             <span className={`font-serif text-5xl leading-none ${cardTheme.price}`}>{details.price}</span>
           </div>
           <div className="text-slate-500 text-sm mt-1">/ week</div>
@@ -108,7 +105,7 @@ function MentorSection() {
     { icon: <Trophy className="w-5 h-5" />, color: "text-amber-600 bg-amber-50 border-amber-200", label: "USACO Gold", desc: "Top competitive programming division" },
     { icon: <Star className="w-5 h-5" />, color: "text-blue-600 bg-blue-50 border-blue-200", label: "6+ Hackathon Wins", desc: "Consistent top finishes at major competitions" },
     { icon: <Rocket className="w-5 h-5" />, color: "text-purple-600 bg-purple-50 border-purple-200", label: "NASA Space Apps Winner", desc: "Global award at NASA's largest hackathon" },
-    { icon: <Users className="w-5 h-5" />, color: "text-emerald-600 bg-emerald-50 border-emerald-200", label: "50+ Students Taught", desc: "Founding and running a school coding club" },
+    { icon: <Users className="w-5 h-5" />, color: "text-emerald-600 bg-emerald-50 border-emerald-200", label: "80+ Students Taught", desc: "Founding and running a school coding club" },
   ];
 
   return (
@@ -269,9 +266,8 @@ export function Home({ setView }: HomeProps) {
                 {/* Header Row */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-orange-300 bg-orange-500/20 border border-orange-400/30 rounded-full px-3 py-1">
-                      <Zap className="w-3 h-3" />
-                      Early bird ends June 1
+                    <span className="inline-flex items-center rounded-full px-3 py-1 text-xs sm:text-sm font-bold bg-white/20 text-white border border-white/20">
+                      At a Glance
                     </span>
                   </div>
                   <div className="flex items-center gap-3 text-xs text-white/70">
@@ -300,7 +296,6 @@ export function Home({ setView }: HomeProps) {
                       </span>
                       <div className="text-right">
                         <div className="flex items-baseline gap-1.5 justify-end">
-                          <span className="text-white/40 text-sm line-through">$45</span>
                           <span className="font-bold text-xl sm:text-2xl leading-none text-white">$25</span>
                         </div>
                         <div className="text-white/50 text-[10px]">/ week</div>
@@ -338,7 +333,6 @@ export function Home({ setView }: HomeProps) {
                       </span>
                       <div className="text-right">
                         <div className="flex items-baseline gap-1.5 justify-end">
-                          <span className="text-white/40 text-sm line-through">$55</span>
                           <span className="font-bold text-xl sm:text-2xl leading-none text-white">$25</span>
                         </div>
                         <div className="text-white/50 text-[10px]">/ week</div>
@@ -500,9 +494,6 @@ export function Home({ setView }: HomeProps) {
           <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
               <div className="text-xs font-bold tracking-widest uppercase text-blue-600">Signup</div>
-              <span className="text-xs font-bold text-amber-600 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-1 flex items-center gap-1">
-                <Zap className="w-3 h-3" /> Early Bird — ends June 1
-              </span>
             </div>
             <h2 className="font-serif text-4xl text-slate-900 leading-tight">Register for class.</h2>
             <p className="mt-3 text-slate-500">Submit the form, send payment, and your registration will be activated after payment is confirmed.</p>

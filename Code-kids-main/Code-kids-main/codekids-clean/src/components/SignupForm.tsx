@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { fbGetSettings, fbFindStudentByEmail, fbAddStudent, getFirebaseError, DEFAULT_SETTINGS, type Settings } from "@/lib/firebase";
+import { useState } from "react";
+import { fbAddStudent, getFirebaseError } from "@/lib/firebase";
 
 export function SignupForm() {
   const [form, setForm] = useState({
@@ -7,14 +7,6 @@ export function SignupForm() {
   });
   const [state, setState] = useState<{ type: "idle" | "success" | "error"; text: string }>({ type: "idle", text: "" });
   const [saving, setSaving] = useState(false);
-  const [showPaymentOptions, setShowPaymentOptions] = useState(false);
-  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
-  // Add this state at the top with your other useState calls
-const [showQrOnly, setShowQrOnly] = useState(false);
-
-  useEffect(() => {
-    fbGetSettings().then(setSettings).catch(() => {});
-  }, []);
 
   async function submit() {
     if (!form.parentName || !form.studentName || !form.email) {
@@ -23,14 +15,7 @@ const [showQrOnly, setShowQrOnly] = useState(false);
     }
     setSaving(true);
     setState({ type: "idle", text: "" });
-    setShowPaymentOptions(false);
     try {
-      const existing = await fbFindStudentByEmail(form.email);
-      if (existing) {
-        setState({ type: "error", text: "That email is already in the system. Use the student portal or contact the instructor." });
-        setSaving(false);
-        return;
-      }
       await fbAddStudent({
         name: form.studentName.trim(),
         email: form.email.trim(),
@@ -43,8 +28,7 @@ const [showQrOnly, setShowQrOnly] = useState(false);
         registrationStatus: "payment-pending"
       });
       setForm({ parentName: "", studentName: "", email: "", age: "", track: "pygame", notes: "" });
-      setShowPaymentOptions(true);
-      setState({ type: "success", text: "Registration request received. Please pay using one of the two QR codes below. After payment is marked as paid, portal access will be activated." });
+      setState({ type: "success", text: "Registration received! Your instructor will email you a PIN to access the student portal once your spot is confirmed." });
     } catch (error) {
       setState({ type: "error", text: getFirebaseError(error) });
     }
@@ -84,7 +68,7 @@ const [showQrOnly, setShowQrOnly] = useState(false);
         <label className="block text-xs font-bold text-slate-700 mb-1.5">Notes</label>
         <textarea data-testid="input-notes" className="w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 resize-y min-h-[80px]" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Anything about experience level or schedule." />
       </div>
-      
+
       {state.text && (
         <div className={`p-3.5 rounded-xl text-sm ${state.type === "success" ? "bg-emerald-50 border border-emerald-200 text-emerald-700" : "bg-red-50 border border-red-200 text-red-700"}`}>
           {state.text}
