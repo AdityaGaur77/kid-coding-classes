@@ -265,11 +265,7 @@ export function Home({ setView }: HomeProps) {
               <div className="bg-white/10 backdrop-blur-md rounded-[32px] p-5 sm:p-6 md:p-8 text-white border border-white/10 shadow-2xl">
                 {/* Header Row */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center rounded-full px-3 py-1 text-xs sm:text-sm font-bold bg-white/20 text-white border border-white/20">
-                      At a Glance
-                    </span>
-                  </div>
+                  <div />
                   <div className="flex items-center gap-3 text-xs text-white/70">
                     <span className="flex items-center gap-1.5">
                       <Video className="w-3.5 h-3.5" />

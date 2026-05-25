@@ -235,7 +235,7 @@ export function Admin({ onExit }: AdminProps) {
                   </thead>
                   <tbody>
                     {!filteredStudents.length && (
-                      <tr><td colSpan={7} className="p-4 text-slate-400 text-sm">No students match the current filters.</td></tr>
+                      <tr><td colSpan={8} className="p-4 text-slate-400 text-sm">No students match the current filters.</td></tr>
                     )}
                     {filteredStudents.map((student) => (
                       <tr key={student.id} data-testid={`student-row-${student.id}`} className="hover:bg-slate-50">

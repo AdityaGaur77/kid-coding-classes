@@ -11,7 +11,7 @@ import { Admin } from "@/pages/Admin";
 import { AdminModal } from "@/components/AdminModal";
 import { Analytics } from "@vercel/analytics/react";
 
-const ADMIN_PASS = "admin2026";
+const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASS || "admin2026";
 
 export default function App() {
   const [view, setView] = useState<"home" | "schedule" | "portal" | "admin">("home");

@@ -4,8 +4,8 @@ import { trackMeta, splitCurriculum, safeDateLabel } from "@/lib/utils";
 import { Video, BookOpen, Link2, CalendarDays, CheckCircle2, Clock3 } from "lucide-react";
 
 const TRACK_THEME = {
-  pygame: { bg: "from-amber-400 to-orange-500", light: "bg-amber-50 border-amber-200 text-amber-700", badge: "bg-amber-100 text-amber-700", dot: "bg-amber-500", icon: "", name: "Pygame Game Dev" },
-  ml:     { bg: "from-teal-500 to-blue-600",   light: "bg-teal-50 border-teal-200 text-teal-700",   badge: "bg-teal-100 text-teal-700",   dot: "bg-teal-500",   icon: "", name: "ML / AI" },
+  pygame: { bg: "from-violet-600 via-purple-600 to-indigo-700", light: "bg-amber-50 border-amber-200 text-amber-700", badge: "bg-amber-100 text-amber-700", dot: "bg-amber-500", icon: "", name: "Pygame Game Dev" },
+  ml:     { bg: "from-cyan-500 via-blue-600 to-indigo-700",     light: "bg-teal-50 border-teal-200 text-teal-700",   badge: "bg-teal-100 text-teal-700",   dot: "bg-teal-500",   icon: "", name: "ML / AI" },
 };
 
 export function Portal() {
