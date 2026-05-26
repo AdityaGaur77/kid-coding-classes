@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import {
   fbGetStudents, fbGetSettings, fbAddStudent,
-  fbUpdateStudent, fbDeleteStudent, fbUpdateSettings, fbSetPinForEmail, getFirebaseError,
+  fbUpdateStudent, fbDeleteStudent, fbUpdateSettings, getFirebaseError,
   DEFAULT_SETTINGS, type Student, type Settings
 } from "@/lib/firebase";
 import { trackMeta, type Track } from "@/lib/utils";
@@ -67,12 +67,12 @@ export function Admin({ onExit }: AdminProps) {
     } catch (error) { setMessage(getFirebaseError(error)); }
   }
 
-  async function generatePin(email: string) {
+  async function generatePin(student: Student) {
     const newPin = String(Math.floor(1000 + Math.random() * 9000));
     try {
-      await fbSetPinForEmail(email, newPin);
-      setStudents((prev) => prev.map((s) => s.email === email ? { ...s, pin: newPin } : s));
-      setMessage(`PIN for ${email} set to ${newPin}. Copy it and email the parent.`);
+      await fbUpdateStudent(student.id, { pin: newPin });
+      setStudents((prev) => prev.map((s) => s.id === student.id ? { ...s, pin: newPin } : s));
+      setMessage(`PIN for ${student.name} set to ${newPin}. Copy it and email the parent.`);
     } catch (error) { setMessage(getFirebaseError(error)); }
   }
 
@@ -81,13 +81,6 @@ export function Admin({ onExit }: AdminProps) {
       const nextPaid = !student.paid;
       await fbUpdateStudent(student.id, { paid: nextPaid, registrationStatus: nextPaid ? "approved" : "payment-pending" });
       setStudents((prev) => prev.map((item) => item.id === student.id ? { ...item, paid: nextPaid, registrationStatus: nextPaid ? "approved" : "payment-pending" } : item));
-    } catch (error) { setMessage(getFirebaseError(error)); }
-  }
-
-  async function updateStatus(student: Student, status: string) {
-    try {
-      await fbUpdateStudent(student.id, { registrationStatus: status });
-      setStudents((prev) => prev.map((item) => item.id === student.id ? { ...item, registrationStatus: status } : item));
     } catch (error) { setMessage(getFirebaseError(error)); }
   }
 
@@ -251,14 +244,9 @@ export function Admin({ onExit }: AdminProps) {
                           <span className={`text-xs font-bold rounded-full px-2.5 py-1 ${student.track === "ml" ? "bg-teal-100 text-teal-700" : "bg-amber-100 text-amber-700"}`}>{trackMeta(student.track).name}</span>
                         </td>
                         <td className="p-3 border-b border-slate-100">
-                          <div className="flex gap-2 flex-wrap items-center">
-                            <span className={`text-xs font-bold rounded-full px-2.5 py-1 ${student.registrationStatus === "approved" ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600"}`}>
-                              {student.registrationStatus === "approved" ? "approved" : "payment pending"}
-                            </span>
-                            {student.registrationStatus !== "approved" && (
-                              <button className="text-xs font-bold border border-slate-200 bg-white text-slate-700 px-2.5 py-1 rounded-lg hover:bg-slate-50" onClick={() => updateStatus(student, "approved")}>Activate</button>
-                            )}
-                          </div>
+                          <span className={`text-xs font-bold rounded-full px-2.5 py-1 ${student.registrationStatus === "approved" ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600"}`}>
+                            {student.registrationStatus === "approved" ? "approved" : "payment pending"}
+                          </span>
                         </td>
                         <td className="p-3 border-b border-slate-100">
                           <button className={`text-xs font-bold px-3 py-1.5 rounded-lg ${student.paid ? "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50" : "bg-slate-900 text-white hover:bg-slate-800"}`} onClick={() => togglePaid(student)}>
@@ -269,7 +257,7 @@ export function Admin({ onExit }: AdminProps) {
                           {student.pin ? (
                             <div className="flex items-center gap-2">
                               <span className="font-mono font-bold text-sm text-slate-900 bg-slate-100 rounded-lg px-2.5 py-1">{student.pin}</span>
-                              <button className="text-xs font-bold border border-slate-200 bg-white text-slate-700 px-2 py-1 rounded-lg hover:bg-slate-50" onClick={() => generatePin(student.email)}>Reset</button>
+                              <button className="text-xs font-bold border border-slate-200 bg-white text-slate-700 px-2 py-1 rounded-lg hover:bg-slate-50" onClick={() => generatePin(student)}>Reset</button>
                             </div>
                           ) : (
                             <button className="text-xs font-bold bg-blue-600 text-white px-2.5 py-1.5 rounded-lg hover:bg-blue-700" onClick={() => generatePin(student.email)}>Generate</button>

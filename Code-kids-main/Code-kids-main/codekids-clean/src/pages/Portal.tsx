@@ -28,20 +28,15 @@ export function Portal() {
         setLoading(false);
         return;
       }
-      const pinMatch = foundStudents[0].pin && foundStudents[0].pin === pin.trim();
-      if (!pinMatch) {
+      const matchedStudent = foundStudents.find((s) => s.pin && s.pin === pin.trim());
+      if (!matchedStudent) {
         setError("Incorrect PIN. Check the email from your instructor, or contact them for your PIN.");
         setLoading(false);
         return;
       }
       setSettings(foundSettings);
-      if (foundStudents.length === 1) {
-        setStudent(foundStudents[0]);
-        setStudents([]);
-      } else {
-        setStudents(foundStudents);
-        setStudent(null);
-      }
+      setStudent(matchedStudent);
+      setStudents([]);
     } catch (err) {
       setError(getFirebaseError(err));
     }
