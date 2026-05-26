@@ -260,7 +260,7 @@ export function Admin({ onExit }: AdminProps) {
                               <button className="text-xs font-bold border border-slate-200 bg-white text-slate-700 px-2 py-1 rounded-lg hover:bg-slate-50" onClick={() => generatePin(student)}>Reset</button>
                             </div>
                           ) : (
-                            <button className="text-xs font-bold bg-blue-600 text-white px-2.5 py-1.5 rounded-lg hover:bg-blue-700" onClick={() => generatePin(student.email)}>Generate</button>
+                            <button className="text-xs font-bold bg-blue-600 text-white px-2.5 py-1.5 rounded-lg hover:bg-blue-700" onClick={() => generatePin(student)}>Generate</button>
                           )}
                         </td>
                         <td className="p-3 border-b border-slate-100">
