@@ -88,6 +88,7 @@ export type Student = {
   email: string;
   track: "pygame" | "ml";
   paid: boolean;
+  halfPaid: boolean;
   notes: string;
   age: string;
   parentName: string;
@@ -103,6 +104,7 @@ function normalizeStudent(doc: { id: string } & Record<string, unknown>): Studen
     email: ((doc["email"] as string) || "").toLowerCase(),
     track: doc["track"] === "ml" ? "ml" : "pygame",
     paid: !!doc["paid"],
+    halfPaid: !!doc["halfPaid"],
     notes: (doc["notes"] as string) || "",
     age: (doc["age"] as string) || "",
     parentName: (doc["parentName"] as string) || "",
@@ -145,11 +147,12 @@ export async function fbAddStudent(data: Omit<Student, "id">): Promise<void> {
     email: data.email.toLowerCase().trim(),
     track: data.track,
     paid: !!data.paid,
+    halfPaid: !!data.halfPaid,
     notes: data.notes || "",
     age: data.age || "",
     parentName: data.parentName || "",
     source: data.source || "manual",
-    registrationStatus: data.registrationStatus || (data.paid ? "approved" : "payment-pending"),
+    registrationStatus: data.registrationStatus || (data.paid ? "approved" : data.halfPaid ? "approved" : "payment-pending"),
     createdAt: window.firebase ? (window.firebase as unknown as { firestore: { FieldValue: { serverTimestamp: () => unknown } } }).firestore.FieldValue?.serverTimestamp?.() ?? new Date().toISOString() : new Date().toISOString()
   };
   await firestore.collection("students").add(payload);
