@@ -16,7 +16,7 @@ export function Admin({ onExit }: AdminProps) {
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [studentForm, setStudentForm] = useState({ name: "", email: "", parentName: "", age: "", track: "pygame" as Track, paid: false, notes: "" });
+  const [studentForm, setStudentForm] = useState({ name: "", email: "", parentName: "", age: "", track: "pygame" as Track, paid: false, halfPaid: false, notes: "" });
   const [recordingForm, setRecordingForm] = useState({ track: "pygame" as Track, title: "", date: "", url: "" });
   const [resourceForm, setResourceForm] = useState({ track: "pygame" as Track, title: "", type: "", url: "" });
   const [filters, setFilters] = useState({ track: "all", paid: "all", status: "all", search: "" });
@@ -38,15 +38,18 @@ export function Admin({ onExit }: AdminProps) {
 
   const stats = useMemo(() => {
     const paid = students.filter((s) => s.paid).length;
-    const revenue = students.filter((s) => s.paid).reduce((sum) => sum + 75, 0);
-    return { total: students.length, paid, unpaid: students.length - paid, revenue };
+    const halfPaid = students.filter((s) => !s.paid && s.halfPaid).length;
+    const unpaid = students.length - paid - halfPaid;
+    const revenue = paid * 50 + halfPaid * 25;
+    return { total: students.length, paid, halfPaid, unpaid, revenue };
   }, [students]);
 
   const filteredStudents = useMemo(() => {
     return students.filter((s) => {
       if (filters.track !== "all" && s.track !== filters.track) return false;
       if (filters.paid === "paid" && !s.paid) return false;
-      if (filters.paid === "unpaid" && s.paid) return false;
+      if (filters.paid === "half" && !(s.halfPaid && !s.paid)) return false;
+      if (filters.paid === "unpaid" && (s.paid || s.halfPaid)) return false;
       if (filters.status !== "all" && s.registrationStatus !== filters.status) return false;
       if (filters.search) {
         const needle = filters.search.toLowerCase();
@@ -59,9 +62,15 @@ export function Admin({ onExit }: AdminProps) {
 
   async function addStudent() {
     if (!studentForm.name || !studentForm.email) { setMessage("Name and email are required."); return; }
+    const registrationStatus = studentForm.paid || studentForm.halfPaid ? "approved" : "payment-pending";
     try {
-      await fbAddStudent({ ...studentForm, source: "manual", registrationStatus: studentForm.paid ? "approved" : "payment-pending" });
-      setStudentForm({ name: "", email: "", parentName: "", age: "", track: "pygame", paid: false, notes: "" });
+      await fbAddStudent({
+        ...studentForm,
+        source: "manual",
+        registrationStatus,
+        halfPaid: studentForm.halfPaid && !studentForm.paid,
+      });
+      setStudentForm({ name: "", email: "", parentName: "", age: "", track: "pygame", paid: false, halfPaid: false, notes: "" });
       setMessage("Student added.");
       loadData();
     } catch (error) { setMessage(getFirebaseError(error)); }
@@ -79,8 +88,32 @@ export function Admin({ onExit }: AdminProps) {
   async function togglePaid(student: Student) {
     try {
       const nextPaid = !student.paid;
-      await fbUpdateStudent(student.id, { paid: nextPaid, registrationStatus: nextPaid ? "approved" : "payment-pending" });
-      setStudents((prev) => prev.map((item) => item.id === student.id ? { ...item, paid: nextPaid, registrationStatus: nextPaid ? "approved" : "payment-pending" } : item));
+      await fbUpdateStudent(student.id, {
+        paid: nextPaid,
+        halfPaid: false,
+        registrationStatus: nextPaid ? "approved" : "payment-pending"
+      });
+      setStudents((prev) => prev.map((item) =>
+        item.id === student.id
+          ? { ...item, paid: nextPaid, halfPaid: false, registrationStatus: nextPaid ? "approved" : "payment-pending" }
+          : item
+      ));
+    } catch (error) { setMessage(getFirebaseError(error)); }
+  }
+
+  async function toggleHalfPaid(student: Student) {
+    try {
+      const nextHalfPaid = !student.halfPaid;
+      await fbUpdateStudent(student.id, {
+        halfPaid: nextHalfPaid,
+        paid: false,
+        registrationStatus: nextHalfPaid ? "approved" : "payment-pending"
+      });
+      setStudents((prev) => prev.map((item) =>
+        item.id === student.id
+          ? { ...item, halfPaid: nextHalfPaid, paid: false, registrationStatus: nextHalfPaid ? "approved" : "payment-pending" }
+          : item
+      ));
     } catch (error) { setMessage(getFirebaseError(error)); }
   }
 
@@ -163,10 +196,11 @@ export function Admin({ onExit }: AdminProps) {
 
       {message && <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-700 text-sm mb-5">{message}</div>}
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-7">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-7">
         {[
           ["Total Signups", stats.total, "bg-slate-100 text-slate-600"],
-          ["Paid", stats.paid, "bg-emerald-100 text-emerald-700"],
+          ["Full Paid", stats.paid, "bg-emerald-100 text-emerald-700"],
+          ["Half Paid", stats.halfPaid, "bg-blue-100 text-blue-700"],
           ["Unpaid", stats.unpaid, "bg-amber-100 text-amber-700"],
           ["Revenue", `$${stats.revenue}`, "bg-teal-100 text-teal-700"]
         ].map(([label, value, cls]) => (
@@ -208,7 +242,8 @@ export function Admin({ onExit }: AdminProps) {
                 </select>
                 <select className={`w-44 ${selectCls}`} value={filters.paid} onChange={(e) => setFilters({ ...filters, paid: e.target.value })}>
                   <option value="all">All Payment</option>
-                  <option value="paid">Paid</option>
+                  <option value="paid">Full Paid</option>
+                  <option value="half">Half Paid</option>
                   <option value="unpaid">Unpaid</option>
                 </select>
                 <select className={`w-52 ${selectCls}`} value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value })}>
@@ -249,9 +284,59 @@ export function Admin({ onExit }: AdminProps) {
                           </span>
                         </td>
                         <td className="p-3 border-b border-slate-100">
-                          <button className={`text-xs font-bold px-3 py-1.5 rounded-lg ${student.paid ? "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50" : "bg-slate-900 text-white hover:bg-slate-800"}`} onClick={() => togglePaid(student)}>
-                            {student.paid ? "Mark Unpaid" : "Mark Paid"}
-                          </button>
+                          <div className="flex flex-col gap-1.5 min-w-[130px]">
+                            {student.paid ? (
+                              // Currently full paid — can downgrade or mark unpaid
+                              <>
+                                <span className="text-xs font-bold text-emerald-700 bg-emerald-100 rounded-full px-2.5 py-1 text-center">Full Paid ($50)</span>
+                                <button
+                                  className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-colors"
+                                  onClick={() => toggleHalfPaid(student)}
+                                >
+                                  Mark Half Paid
+                                </button>
+                                <button
+                                  className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+                                  onClick={() => togglePaid(student)}
+                                >
+                                  Mark Unpaid
+                                </button>
+                              </>
+                            ) : student.halfPaid ? (
+                              // Currently half paid — can upgrade or mark unpaid
+                              <>
+                                <span className="text-xs font-bold text-blue-700 bg-blue-100 rounded-full px-2.5 py-1 text-center">Half Paid ($25)</span>
+                                <button
+                                  className="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-colors"
+                                  onClick={() => togglePaid(student)}
+                                >
+                                  Mark Full Paid
+                                </button>
+                                <button
+                                  className="text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+                                  onClick={() => toggleHalfPaid(student)}
+                                >
+                                  Mark Unpaid
+                                </button>
+                              </>
+                            ) : (
+                              // Currently unpaid
+                              <>
+                                <button
+                                  className="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition-colors"
+                                  onClick={() => togglePaid(student)}
+                                >
+                                  Mark Full Paid
+                                </button>
+                                <button
+                                  className="text-xs font-bold px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                                  onClick={() => toggleHalfPaid(student)}
+                                >
+                                  Mark Half Paid
+                                </button>
+                              </>
+                            )}
+                          </div>
                         </td>
                         <td className="p-3 border-b border-slate-100">
                           {student.pin ? (
@@ -287,7 +372,26 @@ export function Admin({ onExit }: AdminProps) {
                 <div><label className="block text-xs font-bold text-slate-700 mb-1.5">Parent Name</label><input className={inputCls} value={studentForm.parentName} onChange={(e) => setStudentForm({ ...studentForm, parentName: e.target.value })} /></div>
                 <div><label className="block text-xs font-bold text-slate-700 mb-1.5">Age</label><input className={inputCls} value={studentForm.age} onChange={(e) => setStudentForm({ ...studentForm, age: e.target.value })} /></div>
                 <div><label className="block text-xs font-bold text-slate-700 mb-1.5">Track</label><select className={selectCls} value={studentForm.track} onChange={(e) => setStudentForm({ ...studentForm, track: e.target.value as Track })}><option value="pygame">Pygame</option><option value="ml">ML / AI</option></select></div>
-                <div className="flex items-end"><label className="flex gap-3 items-center font-bold text-sm cursor-pointer"><input type="checkbox" checked={studentForm.paid} onChange={(e) => setStudentForm({ ...studentForm, paid: e.target.checked })} className="w-4 h-4" />Mark as paid</label></div>
+                <div className="flex items-end gap-5">
+                  <label className="flex gap-3 items-center font-bold text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={studentForm.paid}
+                      onChange={(e) => setStudentForm({ ...studentForm, paid: e.target.checked, halfPaid: e.target.checked ? false : studentForm.halfPaid })}
+                      className="w-4 h-4"
+                    />
+                    Full paid ($50)
+                  </label>
+                  <label className="flex gap-3 items-center font-bold text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={studentForm.halfPaid && !studentForm.paid}
+                      onChange={(e) => setStudentForm({ ...studentForm, halfPaid: e.target.checked, paid: e.target.checked ? false : studentForm.paid })}
+                      className="w-4 h-4"
+                    />
+                    Half paid ($25)
+                  </label>
+                </div>
               </div>
               <div className="mt-4"><label className="block text-xs font-bold text-slate-700 mb-1.5">Notes</label><textarea className={`${inputCls} min-h-[80px] resize-y`} value={studentForm.notes} onChange={(e) => setStudentForm({ ...studentForm, notes: e.target.value })} /></div>
               <button className="mt-5 bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-slate-800" onClick={addStudent}>Add Student</button>
