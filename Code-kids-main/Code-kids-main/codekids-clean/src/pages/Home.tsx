@@ -100,6 +100,32 @@ function CourseCard({ track }: { track: "pygame" | "ml" }) {
   );
 }
 
+function PythonClosedCard() {
+  return (
+    <div className="rounded-[28px] border border-amber-200 bg-amber-50 p-6 md:p-8 shadow-sm flex flex-col">
+      <div className="flex items-start justify-between gap-6">
+        <span className="inline-flex items-center rounded-xl border border-amber-200 bg-white px-3 py-1.5 text-xs font-bold tracking-wide uppercase text-amber-700">
+          Python Track
+        </span>
+        <span className="inline-flex items-center rounded-xl border border-amber-300 bg-amber-100 px-3 py-1.5 text-xs font-bold tracking-wide uppercase text-amber-800">
+          Registration Closed
+        </span>
+      </div>
+
+      <h3 className="mt-5 font-serif text-4xl leading-tight text-slate-950">Games with Python</h3>
+      <p className="mt-4 max-w-xl text-slate-600 text-[17px] leading-8">
+        This batch is full and registration is now closed. Games with Python will return in July for a
+        second batch if there's enough interest — check back soon or sign up for the AI track in the meantime!
+      </p>
+
+      <div className="mt-auto flex items-center gap-2 pt-7 text-amber-700 font-bold">
+        <Clock className="w-5 h-5" />
+        Returning July 2026
+      </div>
+    </div>
+  );
+}
+
 function MentorSection() {
   const achievements = [
     { icon: <Trophy className="w-5 h-5" />, color: "text-amber-600 bg-amber-50 border-amber-200", label: "USACO Gold", desc: "Top competitive programming division" },
@@ -284,40 +310,28 @@ export function Home({ setView }: HomeProps) {
 
                 {/* Main Content: Class Cards Side by Side */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Pygame Card */}
+                  {/* Pygame Card — registration closed */}
                   <div className="rounded-2xl border border-white/15 bg-white/5 p-4 sm:p-5 flex flex-col">
                     <div className="flex items-start justify-between gap-2 mb-3">
-                      <span className="inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wide bg-teal-500/20 text-teal-300 border border-teal-400/30">
+                      <span className="inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wide bg-white/10 text-white/60 border border-white/20">
                         Python
                       </span>
-                      <div className="text-right">
-                        <div className="flex items-baseline gap-1.5 justify-end">
-                          <span className="font-bold text-xl sm:text-2xl leading-none text-white">$25</span>
-                        </div>
-                        <div className="text-white/50 text-[10px]">/ week</div>
-                      </div>
+                      <span className="inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wide bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                        Registration Closed
+                      </span>
                     </div>
 
                     <h3 className="font-bold text-lg sm:text-xl leading-tight text-white mb-2">
                       Games with Python
                     </h3>
-                    
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      <span className="inline-flex items-center rounded-full border border-teal-400/30 bg-teal-500/10 px-2 py-0.5 text-[10px] font-semibold text-teal-300">
-                        Ages 8+
-                      </span>
-                      <span className="inline-flex items-center rounded-full border border-white/20 bg-white/5 px-2 py-0.5 text-[10px] font-semibold text-white/70">
-                        No experience
-                      </span>
-                    </div>
 
                     <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow mb-3">
-                      Learn Python by building a space arcade game with asteroids, power-ups, and explosions!
+                      Registration for this batch is now closed. Games with Python returns in July for a second batch if there's enough interest!
                     </p>
 
-                    <div className="flex items-center gap-1.5 text-teal-300 text-xs font-semibold mt-auto pt-2 border-t border-white/10">
+                    <div className="flex items-center gap-1.5 text-amber-300 text-xs font-semibold mt-auto pt-2 border-t border-white/10">
                       <Clock className="w-3.5 h-3.5" />
-                      2:00 – 3:30 PM PST
+                      Returning July 2026
                     </div>
                   </div>
 
@@ -460,9 +474,9 @@ export function Home({ setView }: HomeProps) {
               <Clock className="w-5 h-5 text-blue-300" />
             </div>
             <div>
-              <div className="font-bold text-white text-base">Second Batch Coming in July</div>
+              <div className="font-bold text-white text-base">Games with Python — Second Batch Coming in July</div>
               <div className="text-slate-200 text-sm mt-0.5">
-                If there's enough interest!
+                Registration for the current batch is closed. It returns in July if there's enough interest!
               </div>
             </div>
           </div>
@@ -472,12 +486,12 @@ export function Home({ setView }: HomeProps) {
       <section className="py-16 bg-white">
         <div className="max-w-[1120px] mx-auto px-5">
           <div className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-3">Choose A Track</div>
-          <h2 className="font-serif text-4xl text-slate-900 max-w-xl leading-tight">Two tracks. One impressive project each.</h2>
+          <h2 className="font-serif text-4xl text-slate-900 max-w-xl leading-tight">Build a real AI project this summer.</h2>
           <p className="mt-3 text-slate-500 max-w-2xl">
-            Python runs June 2-11, then AI runs June 16-25. Pick one or take both!
+            The AI track runs June 16-25. Games with Python registration is now closed — it returns in July for a second batch if there's enough interest!
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-7">
-            <CourseCard track="pygame" />
+            <PythonClosedCard />
             <CourseCard track="ml" />
           </div>
         </div>

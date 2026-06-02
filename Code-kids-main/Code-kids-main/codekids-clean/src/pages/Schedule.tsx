@@ -39,7 +39,7 @@ function weekLabel(week: { iso: string }[]): string {
 const DAY_LABELS: Record<number, string> = { 2: "Tue", 3: "Wed", 4: "Thu" };
 
 export function Schedule() {
-  const [track, setTrack] = useState<Track>("pygame");
+  const [track, setTrack] = useState<Track>("ml");
   const curriculum = track === "ml" ? ML_CURRICULUM : PYGAME_CURRICULUM;
   const weeks = groupByWeek(curriculum);
 
@@ -59,7 +59,7 @@ export function Schedule() {
             className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${track === "pygame" ? "bg-amber-500 text-white shadow-sm" : "bg-white border border-slate-200 text-slate-700 hover:bg-amber-50 hover:border-amber-200"}`}
             onClick={() => setTrack("pygame")}
           >
-            Games with Python
+            Games with Python <span className="ml-1.5 text-[10px] font-bold uppercase tracking-wide opacity-80">· Closed</span>
           </button>
           <button
             data-testid="btn-track-ml"
@@ -69,6 +69,12 @@ export function Schedule() {
             AI + Image Recognition
           </button>
         </div>
+
+        {track === "pygame" && (
+          <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-amber-800 text-sm">
+            <span className="font-bold">Registration for Games with Python is closed.</span> It returns in July for a second batch if there's enough interest!
+          </div>
+        )}
 
         <div className="flex flex-col gap-6">
           {weeks.map((week, wi) => {
