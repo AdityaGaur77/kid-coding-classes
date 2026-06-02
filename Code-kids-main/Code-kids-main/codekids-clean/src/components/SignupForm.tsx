@@ -3,7 +3,7 @@ import { fbAddStudent, getFirebaseError } from "@/lib/firebase";
 
 export function SignupForm() {
   const [form, setForm] = useState({
-    parentName: "", studentName: "", email: "", age: "", track: "pygame" as "pygame" | "ml", notes: ""
+    parentName: "", studentName: "", email: "", age: "", track: "ml" as "pygame" | "ml", notes: ""
   });
   const [state, setState] = useState<{ type: "idle" | "success" | "error"; text: string }>({ type: "idle", text: "" });
   const [saving, setSaving] = useState(false);
@@ -11,6 +11,10 @@ export function SignupForm() {
   async function submit() {
     if (!form.parentName || !form.studentName || !form.email) {
       setState({ type: "error", text: "Parent name, student name, and email are required." });
+      return;
+    }
+    if (form.track !== "ml") {
+      setState({ type: "error", text: "Registration for Games with Python is closed. It returns in July for a second batch if there's enough interest." });
       return;
     }
     setSaving(true);
@@ -27,7 +31,7 @@ export function SignupForm() {
         source: "website",
         registrationStatus: "payment-pending"
       });
-      setForm({ parentName: "", studentName: "", email: "", age: "", track: "pygame", notes: "" });
+      setForm({ parentName: "", studentName: "", email: "", age: "", track: "ml", notes: "" });
       setState({ type: "success", text: "Registration received! Your instructor will email you a PIN to access the student portal once your spot is confirmed." });
     } catch (error) {
       setState({ type: "error", text: getFirebaseError(error) });
@@ -60,9 +64,9 @@ export function SignupForm() {
       <div>
         <label className="block text-xs font-bold text-slate-700 mb-1.5">Track</label>
         <select data-testid="select-track" className="w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 bg-white" value={form.track} onChange={(e) => setForm({ ...form, track: e.target.value as "pygame" | "ml" })}>
-          <option value="pygame">Pygame | $25/week</option>
           <option value="ml">ML / AI | $25/week</option>
         </select>
+        <p className="mt-2 text-xs text-slate-500">Games with Python registration is closed — it returns in July for a second batch if there's enough interest.</p>
       </div>
       <div>
         <label className="block text-xs font-bold text-slate-700 mb-1.5">Notes</label>
