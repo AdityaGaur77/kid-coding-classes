@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { fbFindStudentsByEmail, fbGetSettings, getFirebaseError, DEFAULT_SETTINGS, type Student, type Settings } from "@/lib/firebase";
 import { trackMeta, splitCurriculum, safeDateLabel } from "@/lib/utils";
-import { Video, BookOpen, Link2, CalendarDays, CheckCircle2, Clock3 } from "lucide-react";
+import { Video, BookOpen, Link2, CalendarDays, CheckCircle2, Clock3, FileText } from "lucide-react";
 
 const TRACK_THEME = {
   pygame: { bg: "from-violet-600 via-purple-600 to-indigo-700", light: "bg-amber-50 border-amber-200 text-amber-700", badge: "bg-amber-100 text-amber-700", dot: "bg-amber-500", icon: "", name: "Pygame Game Dev" },
@@ -58,6 +58,7 @@ export function Portal() {
   const zoom = track === "ml" ? settings.mlZoom : settings.pygameZoom;
   const recordings = track === "ml" ? (settings.mlRecordings || []) : (settings.pygameRecordings || []);
   const resources = track === "ml" ? (settings.mlResources || []) : (settings.pygameResources || []);
+  const materials = track === "ml" ? (settings.mlMaterials || []) : (settings.pygameMaterials || []);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -252,6 +253,63 @@ export function Portal() {
               ) : (
                 <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-500 text-sm text-center">
                   🎬 Recordings will appear here after each class.
+                </div>
+              )}
+            </div>
+
+            {/* Class Materials — slide decks + code */}
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <div className="font-bold text-slate-900">Class Materials</div>
+                  <div className="text-slate-500 text-xs">Slide decks and code from each class</div>
+                </div>
+              </div>
+              {materials.length ? (
+                <div className="flex flex-col gap-2.5">
+                  {materials.map((item, index) => (
+                    <div
+                      key={index}
+                      data-testid={`material-${index}`}
+                      className="flex items-center justify-between gap-3 p-4 rounded-2xl border border-slate-200 bg-slate-50"
+                    >
+                      <div className="min-w-0">
+                        <div className="font-bold text-slate-900 text-sm">{item.title}</div>
+                        <div className="text-slate-400 text-xs mt-0.5">{item.date || "Class materials"}</div>
+                      </div>
+                      <div className="flex gap-2 shrink-0">
+                        {item.slidesUrl && (
+                          <a
+                            data-testid={`material-slides-${index}`}
+                            className="flex items-center gap-1.5 text-xs font-bold bg-blue-100 text-blue-700 rounded-full px-3 py-1.5 hover:bg-blue-200 transition-colors"
+                            href={item.slidesUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            📊 Slides
+                          </a>
+                        )}
+                        {item.codeUrl && (
+                          <a
+                            data-testid={`material-code-${index}`}
+                            className="flex items-center gap-1.5 text-xs font-bold bg-teal-100 text-teal-700 rounded-full px-3 py-1.5 hover:bg-teal-200 transition-colors"
+                            href={item.codeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            💻 Code
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-500 text-sm text-center">
+                  📚 Slide decks and code will appear here after each class.
                 </div>
               )}
             </div>
