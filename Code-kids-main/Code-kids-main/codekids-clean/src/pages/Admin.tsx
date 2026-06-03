@@ -11,7 +11,7 @@ interface AdminProps {
 }
 
 export function Admin({ onExit }: AdminProps) {
-  const [tab, setTab] = useState<"students" | "add" | "content" | "resources">("students");
+  const [tab, setTab] = useState<"students" | "add" | "content" | "resources" | "materials">("students");
   const [students, setStudents] = useState<Student[]>([]);
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(false);
@@ -19,6 +19,7 @@ export function Admin({ onExit }: AdminProps) {
   const [studentForm, setStudentForm] = useState({ name: "", email: "", parentName: "", age: "", track: "pygame" as Track, paid: false, halfPaid: false, notes: "" });
   const [recordingForm, setRecordingForm] = useState({ track: "pygame" as Track, title: "", date: "", url: "" });
   const [resourceForm, setResourceForm] = useState({ track: "pygame" as Track, title: "", type: "", url: "" });
+  const [materialForm, setMaterialForm] = useState({ track: "pygame" as Track, title: "", date: "", slidesUrl: "", codeUrl: "" });
   const [filters, setFilters] = useState({ track: "all", paid: "all", status: "all", search: "" });
 
   async function loadData() {
@@ -178,6 +179,28 @@ export function Admin({ onExit }: AdminProps) {
     } catch (error) { setMessage(getFirebaseError(error)); }
   }
 
+  async function addMaterial() {
+    if (!materialForm.title) { setMessage("Class material title is required."); return; }
+    if (!materialForm.slidesUrl && !materialForm.codeUrl) { setMessage("Add a slide deck link, a code link, or both."); return; }
+    const field = materialForm.track === "ml" ? "mlMaterials" : "pygameMaterials";
+    const updated = [...(settings[field] || []), { title: materialForm.title, date: materialForm.date, slidesUrl: materialForm.slidesUrl, codeUrl: materialForm.codeUrl }];
+    try {
+      await fbUpdateSettings({ [field]: updated });
+      setSettings((prev) => ({ ...prev, [field]: updated }));
+      setMaterialForm({ track: "pygame", title: "", date: "", slidesUrl: "", codeUrl: "" });
+      setMessage("Class material added.");
+    } catch (error) { setMessage(getFirebaseError(error)); }
+  }
+
+  async function removeMaterial(track: Track, index: number) {
+    const field = track === "ml" ? "mlMaterials" : "pygameMaterials";
+    const updated = (settings[field] || []).filter((_, i) => i !== index);
+    try {
+      await fbUpdateSettings({ [field]: updated });
+      setSettings((prev) => ({ ...prev, [field]: updated }));
+    } catch (error) { setMessage(getFirebaseError(error)); }
+  }
+
   const inputCls = "w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 bg-white";
   const selectCls = `${inputCls}`;
 
@@ -212,14 +235,14 @@ export function Admin({ onExit }: AdminProps) {
       </div>
 
       <div className="flex gap-2.5 flex-wrap mb-6">
-        {(["students", "add", "content", "resources"] as const).map((id) => (
+        {(["students", "add", "content", "resources", "materials"] as const).map((id) => (
           <button
             key={id}
             data-testid={`tab-${id}`}
             className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${tab === id ? "bg-slate-900 text-white" : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"}`}
             onClick={() => setTab(id)}
           >
-            {id === "students" ? "Students" : id === "add" ? "Add Student" : id === "content" ? "Portal Content" : "Resources"}
+            {id === "students" ? "Students" : id === "add" ? "Add Student" : id === "content" ? "Portal Content" : id === "resources" ? "Resources" : "Class Materials"}
           </button>
         ))}
       </div>
@@ -488,6 +511,47 @@ export function Admin({ onExit }: AdminProps) {
                           <a className="text-xs font-bold border border-slate-200 bg-white text-slate-700 px-2.5 py-1.5 rounded-lg hover:bg-slate-50" href={item.url} target="_blank" rel="noopener noreferrer">Open</a>
                           <button className="text-xs font-bold border border-slate-200 bg-white text-slate-700 px-2.5 py-1.5 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200" onClick={() => removeResource(t, index)}>Remove</button>
                         </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {tab === "materials" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h2 className="font-serif text-2xl text-slate-900 mb-2">Add class materials</h2>
+                <p className="text-slate-500 text-sm mb-5">Share each class's slide deck and code. Paste a link (Google Slides, PDF, GitHub, Replit, Google Drive, etc.). You can add just slides, just code, or both.</p>
+                <div className="flex flex-col gap-4">
+                  <div><label className="block text-xs font-bold text-slate-700 mb-1.5">Track</label><select className={selectCls} value={materialForm.track} onChange={(e) => setMaterialForm({ ...materialForm, track: e.target.value as Track })}><option value="pygame">Pygame</option><option value="ml">ML / AI</option></select></div>
+                  <div><label className="block text-xs font-bold text-slate-700 mb-1.5">Class Title</label><input className={inputCls} value={materialForm.title} onChange={(e) => setMaterialForm({ ...materialForm, title: e.target.value })} placeholder="Week 1 - Class 1" /></div>
+                  <div><label className="block text-xs font-bold text-slate-700 mb-1.5">Date</label><input className={inputCls} value={materialForm.date} onChange={(e) => setMaterialForm({ ...materialForm, date: e.target.value })} placeholder="June 2, 2026" /></div>
+                  <div><label className="block text-xs font-bold text-slate-700 mb-1.5">Slide Deck Link</label><input className={inputCls} value={materialForm.slidesUrl} onChange={(e) => setMaterialForm({ ...materialForm, slidesUrl: e.target.value })} placeholder="Google Slides or PDF link" /></div>
+                  <div><label className="block text-xs font-bold text-slate-700 mb-1.5">Code Link</label><input className={inputCls} value={materialForm.codeUrl} onChange={(e) => setMaterialForm({ ...materialForm, codeUrl: e.target.value })} placeholder="GitHub, Replit, or Drive link" /></div>
+                </div>
+                <button className="mt-5 bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-slate-800" onClick={addMaterial}>Add Class Materials</button>
+              </div>
+
+              {(["pygame", "ml"] as Track[]).map((t) => {
+                const field = t === "ml" ? "mlMaterials" : "pygameMaterials";
+                const list = settings[field] || [];
+                return (
+                  <div key={t} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                    <h3 className="font-bold text-slate-900 text-lg mb-4">{trackMeta(t).name} Class Materials</h3>
+                    {!list.length && <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-sm">No class materials yet.</div>}
+                    {list.map((item, index) => (
+                      <div key={index} className="flex justify-between items-start gap-3 p-3.5 rounded-xl border border-slate-100 bg-white mb-2">
+                        <div className="min-w-0">
+                          <div className="font-bold text-sm text-slate-900">{item.title}</div>
+                          <div className="text-xs text-slate-400">{item.date || "No date"}</div>
+                          <div className="flex gap-2 mt-2 flex-wrap">
+                            {item.slidesUrl && <a className="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg hover:bg-blue-100" href={item.slidesUrl} target="_blank" rel="noopener noreferrer">Slides</a>}
+                            {item.codeUrl && <a className="text-xs font-bold text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-1 rounded-lg hover:bg-teal-100" href={item.codeUrl} target="_blank" rel="noopener noreferrer">Code</a>}
+                          </div>
+                        </div>
+                        <button className="text-xs font-bold border border-slate-200 bg-white text-slate-700 px-2.5 py-1.5 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 shrink-0" onClick={() => removeMaterial(t, index)}>Remove</button>
                       </div>
                     ))}
                   </div>

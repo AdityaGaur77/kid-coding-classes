@@ -175,6 +175,8 @@ export type Settings = {
   mlRecordings: { title: string; date: string; url: string }[];
   pygameResources: { title: string; url: string; type: string }[];
   mlResources: { title: string; url: string; type: string }[];
+  pygameMaterials: { title: string; date: string; slidesUrl: string; codeUrl: string }[];
+  mlMaterials: { title: string; date: string; slidesUrl: string; codeUrl: string }[];
   announcement: string;
   paypalUrl: string;
   venmoUrl: string;
@@ -200,6 +202,8 @@ export const DEFAULT_SETTINGS: Settings = {
     { title: "Google Colab", url: "https://colab.research.google.com/", type: "Tool" },
     { title: "Kaggle Datasets", url: "https://www.kaggle.com/datasets", type: "Dataset" }
   ],
+  pygameMaterials: [],
+  mlMaterials: [],
   announcement: "Zoom links and recordings will appear here once classes begin.",
   paypalUrl: "",
   venmoUrl: "",
