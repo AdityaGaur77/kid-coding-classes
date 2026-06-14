@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SummerScope — Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:#F5F4F0;color:#111827;font-size:14px;min-height:100vh}
+
+nav{background:#0D1926;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 1.75rem;position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(255,255,255,.06)}
+.logo{font-family:'Lora',serif;font-size:1.2rem;color:#fff;display:flex;align-items:center;gap:.4rem}
+.ldot{width:7px;height:7px;background:#E8825C;border-radius:50%}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.range-tabs{display:flex;gap:2px;background:rgba(255,255,255,.08);border-radius:8px;padding:3px}
+.rtab{padding:.25rem .7rem;border-radius:6px;border:none;background:none;color:rgba(255,255,255,.5);font-size:.75rem;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s}
+.rtab.active{background:rgba(255,255,255,.18);color:#fff}
+.refresh-btn{padding:.3rem .9rem;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.6);font-family:inherit;font-size:.75rem;cursor:pointer;transition:all .15s}
+.refresh-btn:hover{border-color:rgba(255,255,255,.35);color:#fff}
+.updated{font-size:.7rem;color:rgba(255,255,255,.3)}
+
+main{max-width:1200px;margin:0 auto;padding:1.5rem 1.75rem 3rem}
+
+.center-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh;gap:1rem;color:#9CA3AF;text-align:center}
+.spinner{width:30px;height:30px;border:2.5px solid #E2DFD8;border-top-color:#E8825C;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-icon{font-size:2rem;margin-bottom:.25rem}
+.empty-title{font-size:1rem;font-weight:600;color:#6B7280}
+.empty-sub{font-size:.82rem;color:#9CA3AF;max-width:320px;line-height:1.5}
+
+.warn-banner{background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.8rem;color:#92400E;line-height:1.45}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:.85rem}
+@media(max-width:760px){.stats-row{grid-template-columns:1fr 1fr}}
+.stat{background:#fff;border:1px solid #E2DFD8;border-radius:13px;padding:1.1rem 1.25rem;position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent,#E8825C)}
+.stat-label{font-size:.67rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#9CA3AF;margin-bottom:.4rem}
+.stat-val{font-size:1.85rem;font-weight:600;color:#0D1926;line-height:1}
+.stat-sub{font-size:.72rem;color:#9CA3AF;margin-top:.35rem}
+
+.section-label{font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9CA3AF;margin:1.4rem 0 .75rem}
+
+.card{background:#fff;border:1px solid #E2DFD8;border-radius:13px;padding:1.25rem}
+.card-title{font-size:.82rem;font-weight:600;color:#0D1926;margin-bottom:1rem}
+.card canvas{display:block}
+
+.g1{margin-bottom:.85rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.85rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.85rem;margin-bottom:.85rem}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.85rem;margin-bottom:.85rem}
+@media(max-width:860px){.g3,.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+.t-row{display:flex;align-items:center;gap:.65rem;padding:.42rem 0;border-bottom:1px solid #F3F4F6}
+.t-row:last-child{border-bottom:none}
+.t-num{font-size:.68rem;color:#D1D5DB;width:16px;text-align:right;flex-shrink:0}
+.t-label{flex:1;font-size:.8rem;color:#374151;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t-bar-wrap{width:64px;height:4px;background:#F3F4F6;border-radius:2px;flex-shrink:0}
+.t-bar{height:100%;border-radius:2px;background:#E8825C}
+.t-count{font-size:.75rem;font-weight:600;color:#6B7280;width:26px;text-align:right;flex-shrink:0}
+.t-empty{font-size:.8rem;color:#D1D5DB;padding:.5rem 0}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><div class="ldot"></div>SummerScope <span style="font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:400;color:rgba(255,255,255,.35);margin-left:.3rem">Analytics</span></div>
+  <div class="nav-right">
+    <div class="range-tabs">
+      <button class="rtab active" onclick="setRange(7,this)">7d</button>
+      <button class="rtab" onclick="setRange(30,this)">30d</button>
+      <button class="rtab" onclick="setRange(90,this)">90d</button>
+    </div>
+    <span class="updated" id="updated"></span>
+    <button class="refresh-btn" onclick="load()">↻ Refresh</button>
+  </div>
+</nav>
+
+<main>
+  <div id="loading" class="center-state"><div class="spinner"></div><span>Loading analytics…</span></div>
+  <div id="error"  class="center-state" style="display:none">
+    <div class="empty-icon">⚠️</div>
+    <div class="empty-title">Could not load data</div>
+    <div class="empty-sub" id="error-msg"></div>
+  </div>
+  <div id="content" style="display:none">
+
+    <div id="warn" class="warn-banner" style="display:none"></div>
+
+    <div class="stats-row" id="stats-row-1"></div>
+    <div class="stats-row" id="stats-row-2"></div>
+
+    <div class="section-label">Visits over time</div>
+    <div class="card g1" style="padding:1.25rem 1.25rem 1rem">
+      <canvas id="chart-line" height="90"></canvas>
+    </div>
+
+    <div class="section-label">Audience breakdown</div>
+    <div class="g4">
+      <div class="card"><div class="card-title">Page</div><canvas id="chart-page" height="160"></canvas></div>
+      <div class="card"><div class="card-title">Device</div><canvas id="chart-device" height="160"></canvas></div>
+      <div class="card"><div class="card-title">Browser</div><canvas id="chart-browser" height="160"></canvas></div>
+      <div class="card"><div class="card-title">OS</div><canvas id="chart-os" height="160"></canvas></div>
+    </div>
+
+    <div class="section-label">Scroll depth</div>
+    <div class="card g1" style="padding:1.25rem 1.25rem 1rem">
+      <div class="card-title" style="margin-bottom:.75rem">Sessions reaching each milestone</div>
+      <canvas id="chart-scroll" height="60"></canvas>
+    </div>
+
+    <div class="section-label">Traffic sources</div>
+    <div class="g2">
+      <div class="card"><div class="card-title">Top referrers</div><div id="t-referrers"></div></div>
+      <div class="card"><div class="card-title">UTM sources</div><div id="t-utm"></div></div>
+    </div>
+
+    <div class="section-label">Content engagement</div>
+    <div class="g2">
+      <div class="card"><div class="card-title">Most clicked programs</div><div id="t-programs"></div></div>
+      <div class="card"><div class="card-title">Most clicked events</div><div id="t-events"></div></div>
+    </div>
+    <div class="g2">
+      <div class="card"><div class="card-title">Top searches</div><div id="t-searches"></div></div>
+      <div class="card"><div class="card-title">Buttons clicked</div><div id="t-buttons"></div></div>
+    </div>
+
+    <div class="section-label">Filters & navigation</div>
+    <div class="g2">
+      <div class="card"><div class="card-title">Nav tabs</div><div id="t-nav"></div></div>
+      <div class="card"><div class="card-title">Most used filters</div><div id="t-filters"></div></div>
+    </div>
+    <div class="g2">
+      <div class="card"><div class="card-title">Event type filters</div><div id="t-event-filters"></div></div>
+      <div class="card"><div class="card-title">Sort options used</div><div id="t-sorts"></div></div>
+    </div>
+    <div class="g2">
+      <div class="card"><div class="card-title">External links clicked</div><div id="t-links"></div></div>
+      <div class="card"><div class="card-title">Clear filters</div><div id="t-clear"></div></div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const PW = sessionStorage.getItem('_ss_dash_pw') || '';
+if (!PW) { window.location.href = '/'; }
+
+let rangeDays = 7;
+let charts = {};
+
+function setRange(days, btn) {
+  rangeDays = days;
+  document.querySelectorAll('.rtab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  load();
+}
+
+async function load() {
+  document.getElementById('loading').style.display = 'flex';
+  document.getElementById('content').style.display = 'none';
+  document.getElementById('error').style.display   = 'none';
+
+  try {
+    const r = await fetch('/api/analytics?days=' + rangeDays, {
+      headers: { Authorization: 'Bearer ' + PW }
+    });
+    if (r.status === 401) { sessionStorage.removeItem('_ss_dash_pw'); window.location.href = '/'; return; }
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    if (d.error || !d.summary) throw new Error(d.error || 'invalid response');
+    render(d);
+  } catch (e) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error-msg').textContent = e.message;
+    document.getElementById('error').style.display = 'flex';
+  }
+}
+
+const PALETTE = ['#E8825C','#0D1926','#4ADE80','#60A5FA','#A78BFA','#FBBF24','#F472B6','#34D399'];
+
+function fmt(sec) {
+  if (!sec) return '—';
+  if (sec >= 60) return Math.floor(sec/60) + 'm ' + (sec%60) + 's';
+  return sec + 's';
+}
+
+function statCard(c) {
+  return `<div class="stat" style="--accent:${c.accent}">
+    <div class="stat-label">${c.label}</div>
+    <div class="stat-val">${c.val}</div>
+    <div class="stat-sub">${c.sub}</div>
+  </div>`;
+}
+
+function killChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function render(d) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+
+  const ts = new Date(d.generated_at);
+  document.getElementById('updated').textContent = 'Updated ' + ts.toLocaleTimeString();
+
+  const warn = document.getElementById('warn');
+  if (d.data_truncated) {
+    warn.textContent = 'Note: This date range exceeds 100,000 events. Stats prioritize the most recent data; older events in this range may be omitted.';
+    warn.style.display = 'block';
+  } else {
+    warn.style.display = 'none';
+  }
+
+  const s = d.summary;
+  document.getElementById('stats-row-1').innerHTML = [
+    { label:'Page Views',       val: s.total_pageviews.toLocaleString(), sub:'last ' + rangeDays + ' days', accent:'#E8825C' },
+    { label:'Unique Visitors',  val: s.unique_visitors.toLocaleString(), sub:'distinct visitor IDs', accent:'#0D1926' },
+    { label:'Sessions',         val: s.unique_sessions.toLocaleString(), sub:'distinct sessions', accent:'#4ADE80' },
+    { label:'Avg Time on Page', val: fmt(s.avg_duration_sec),            sub:'per session end event', accent:'#60A5FA' },
+  ].map(statCard).join('');
+
+  document.getElementById('stats-row-2').innerHTML = [
+    { label:'New Visitors',       val: s.new_visitors.toLocaleString(),       sub:'first-time ever', accent:'#A78BFA' },
+    { label:'Returning Visitors', val: s.returning_visitors.toLocaleString(), sub:'visited before', accent:'#FBBF24' },
+    { label:'Total Events',       val: s.total_events.toLocaleString(),       sub:'all tracked events', accent:'#34D399' },
+    { label:'Clear Filters',      val: (s.clear_filters || 0).toLocaleString(), sub:'times reset', accent:'#F472B6' },
+  ].map(statCard).join('');
+
+  killChart('line');
+  const days = d.pageviews_by_day;
+  const ctx1 = document.getElementById('chart-line').getContext('2d');
+  charts['line'] = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: days.map(d => { const [,m,dy] = d.date.split('-'); return +m+'/'+parseInt(dy); }),
+      datasets: [{ label:'Views', data: days.map(d => d.count),
+        borderColor:'#E8825C', backgroundColor:'rgba(232,130,92,.1)',
+        borderWidth:2, pointRadius:3, pointBackgroundColor:'#E8825C', fill:true, tension:.35 }],
+    },
+    options: { responsive:true, plugins:{ legend:{display:false} },
+      scales:{ x:{ grid:{color:'#F3F4F6'}, ticks:{color:'#9CA3AF',maxTicksLimit:12,font:{size:11}} },
+               y:{ grid:{color:'#F3F4F6'}, ticks:{color:'#9CA3AF',font:{size:11}}, beginAtZero:true } } }
+  });
+
+  function doughnut(id, data) {
+    killChart(id);
+    if (!data || !data.length) return;
+    const ctx = document.getElementById('chart-'+id).getContext('2d');
+    charts[id] = new Chart(ctx, {
+      type: 'doughnut',
+      data: { labels: data.map(d=>d.label), datasets:[{ data:data.map(d=>d.count),
+        backgroundColor:PALETTE, borderColor:'#fff', borderWidth:3 }] },
+      options: { responsive:true, plugins:{ legend:{ position:'bottom',
+        labels:{ color:'#6B7280', font:{size:11}, padding:12, boxWidth:10 } } } }
+    });
+  }
+  doughnut('page',    d.by_page);
+  doughnut('device',  d.by_device);
+  doughnut('browser', d.by_browser);
+  doughnut('os',      d.by_os);
+
+  killChart('scroll');
+  const ctx2 = document.getElementById('chart-scroll').getContext('2d');
+  charts['scroll'] = new Chart(ctx2, {
+    type: 'bar',
+    data: { labels: d.scroll_depth.map(s=>s.label),
+      datasets:[{ label:'Sessions', data:d.scroll_depth.map(s=>s.count),
+        backgroundColor:PALETTE, borderRadius:6 }] },
+    options: { responsive:true, plugins:{ legend:{display:false} },
+      scales:{ x:{ grid:{display:false}, ticks:{color:'#9CA3AF'} },
+               y:{ grid:{color:'#F3F4F6'}, ticks:{color:'#9CA3AF'}, beginAtZero:true } } }
+  });
+
+  function table(id, rows, empty) {
+    const el = document.getElementById(id);
+    if (!rows || !rows.length) { el.innerHTML='<div class="t-empty">'+empty+'</div>'; return; }
+    const max = rows[0].count;
+    el.innerHTML = rows.map((r,i) => `
+      <div class="t-row">
+        <span class="t-num">${i+1}</span>
+        <span class="t-label" title="${r.label}">${r.label}</span>
+        <div class="t-bar-wrap"><div class="t-bar" style="width:${Math.round(r.count/max*100)}%"></div></div>
+        <span class="t-count">${r.count}</span>
+      </div>`).join('');
+  }
+
+  function singleStat(id, label, count) {
+    const el = document.getElementById(id);
+    el.innerHTML = count
+      ? `<div class="t-row"><span class="t-label">${label}</span><span class="t-count">${count}</span></div>`
+      : '<div class="t-empty">No usage yet</div>';
+  }
+
+  table('t-referrers',     d.top_referrers,      'No referrer data yet');
+  table('t-utm',           d.top_utm_sources,    'No UTM traffic yet');
+  table('t-programs',      d.top_programs,       'No program clicks yet');
+  table('t-events',        d.top_events,         'No event clicks yet');
+  table('t-searches',      d.top_searches,       'No searches yet');
+  table('t-buttons',       d.top_buttons,        'No button clicks yet');
+  table('t-nav',           d.top_nav_tabs,       'No nav tab clicks yet');
+  table('t-filters',       d.top_filters,        'No filter usage yet');
+  table('t-event-filters', d.top_event_filters,  'No event filter clicks yet');
+  table('t-sorts',         d.top_sorts,          'No sort changes yet');
+  table('t-links',         d.top_links,          'No external links clicked yet');
+  singleStat('t-clear', 'Times "Clear filters" was clicked', s.clear_filters || 0);
+}
+
+load();
+</script>
+</body>
+</html>
