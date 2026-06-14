@@ -13,10 +13,6 @@ export function SignupForm() {
       setState({ type: "error", text: "Parent name, student name, and email are required." });
       return;
     }
-    if (form.track !== "ml") {
-      setState({ type: "error", text: "Registration for Games with Python is closed. It returns in July for a second batch if there's enough interest." });
-      return;
-    }
     setSaving(true);
     setState({ type: "idle", text: "" });
     try {
@@ -28,11 +24,11 @@ export function SignupForm() {
         notes: form.notes.trim(),
         age: form.age.trim(),
         parentName: form.parentName.trim(),
-        source: "website",
-        registrationStatus: "payment-pending"
+        source: "website-waitlist",
+        registrationStatus: "waitlist"
       });
       setForm({ parentName: "", studentName: "", email: "", age: "", track: "ml", notes: "" });
-      setState({ type: "success", text: "Registration received! Your instructor will email you a PIN to access the student portal once your spot is confirmed." });
+      setState({ type: "success", text: "You're on the waitlist! You'll get an email if a July batch is scheduled." });
     } catch (error) {
       setState({ type: "error", text: getFirebaseError(error) });
     }
@@ -62,11 +58,12 @@ export function SignupForm() {
         </div>
       </div>
       <div>
-        <label className="block text-xs font-bold text-slate-700 mb-1.5">Track</label>
+        <label className="block text-xs font-bold text-slate-700 mb-1.5">Preferred Track</label>
         <select data-testid="select-track" className="w-full border border-slate-200 rounded-xl px-3.5 py-3 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 bg-white" value={form.track} onChange={(e) => setForm({ ...form, track: e.target.value as "pygame" | "ml" })}>
-          <option value="ml">ML / AI | $25/week</option>
+          <option value="ml">AI + Image Recognition</option>
+          <option value="pygame">Games with Python</option>
         </select>
-        <p className="mt-2 text-xs text-slate-500">Games with Python registration is closed — it returns in July for a second batch if there's enough interest.</p>
+        <p className="mt-2 text-xs text-slate-500">Both tracks are closed for the current batch. A July batch is not yet confirmed — joining the waitlist helps decide whether to run one.</p>
       </div>
       <div>
         <label className="block text-xs font-bold text-slate-700 mb-1.5">Notes</label>
@@ -89,7 +86,7 @@ export function SignupForm() {
             <span className="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin inline-block" />
             Submitting...
           </>
-        ) : "Submit Registration"}
+        ) : "Join Waitlist"}
       </button>
     </div>
   );

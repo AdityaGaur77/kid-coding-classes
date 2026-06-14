@@ -10,117 +10,32 @@ interface HomeProps {
   setView: (v: View) => void;
 }
 
-function CourseCard({ track }: { track: "pygame" | "ml" }) {
+function ClosedCard({ track }: { track: "pygame" | "ml" }) {
   const isMl = track === "ml";
-
-  const cardTheme = isMl
-    ? {
-        outer: "bg-blue-50 border-blue-200",
-        pill: "bg-blue-100 text-blue-700 border-blue-200",
-        title: "text-blue-700",
-        button: "bg-blue-600 hover:bg-blue-700 text-white",
-        price: "text-blue-600",
-        metaPill: "bg-white text-blue-700 border-blue-200",
-      }
-    : {
-        outer: "bg-slate-50 border-slate-200",
-        pill: "bg-white text-slate-600 border-slate-200",
-        title: "text-slate-950",
-        button: "bg-slate-950 hover:bg-slate-800 text-white",
-        price: "text-slate-950",
-        metaPill: "bg-white text-slate-700 border-slate-200",
-      };
-
   const details = isMl
-    ? {
-        trackLabel: "AI TRACK",
-        title: "AI + Image Recognition",
-        description:
-          "Learn how AI works by training your own model to recognize hand gestures. Build an interactive app that triggers cool visual effects when you wave, point, or make a fist!",
-        price: "$25",
-        cta: "Enroll in AI Track →",
-        age: "Ages 10+",
-        prereq: "No coding needed",
-        time: "2:00 – 3:30 PM PST",
-      }
-    : {
-        trackLabel: "PYTHON TRACK",
-        title: "Games with Python",
-        description:
-          "Learn Python by building a complete space arcade game. Code your spaceship, dodge asteroids, collect power-ups, and add explosions and sound effects!",
-        price: "$25",
-        cta: "Enroll in Python Track →",
-        age: "Ages 8+",
-        prereq: "No experience needed",
-        time: "2:00 – 3:30 PM PST",
-      };
+    ? { label: "AI Track", title: "AI + Image Recognition" }
+    : { label: "Python Track", title: "Games with Python" };
 
-  return (
-    <div className={`rounded-[28px] border p-6 md:p-8 shadow-sm transition-shadow hover:shadow-md ${cardTheme.outer}`}>
-      <div className="flex items-start justify-between gap-6">
-        <div>
-          <span className={`inline-flex items-center rounded-xl border px-3 py-1.5 text-xs font-bold tracking-wide uppercase ${cardTheme.pill}`}>
-            {details.trackLabel}
-          </span>
-        </div>
-<div className="text-right shrink-0">
-          <div className="flex items-baseline gap-2 justify-end">
-            <span className={`font-serif text-5xl leading-none ${cardTheme.price}`}>{details.price}</span>
-          </div>
-          <div className="text-slate-500 text-sm mt-1">/ week</div>
-        </div>
-      </div>
-
-      <h3 className={`mt-5 font-serif text-4xl leading-tight ${cardTheme.title}`}>{details.title}</h3>
-      <p className="mt-4 max-w-xl text-slate-600 text-[17px] leading-8">{details.description}</p>
-
-      <div className="mt-5 flex flex-wrap gap-2.5">
-        <span className={`inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-bold ${cardTheme.metaPill}`}>
-          {details.age}
-        </span>
-        <span className={`inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-bold ${cardTheme.metaPill}`}>
-          {details.prereq}
-        </span>
-        <span className={`inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-bold ${cardTheme.metaPill}`}>
-          6 live classes
-        </span>
-        <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold ${cardTheme.metaPill}`}>
-          <Clock className="w-3 h-3" />
-          {details.time}
-        </span>
-      </div>
-
-      <button
-        onClick={() => document.getElementById("signup-section")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-        className={`mt-7 w-full rounded-2xl px-6 py-4 text-lg font-bold transition-colors ${cardTheme.button}`}
-      >
-        {details.cta}
-      </button>
-    </div>
-  );
-}
-
-function PythonClosedCard() {
   return (
     <div className="rounded-[28px] border border-amber-200 bg-amber-50 p-6 md:p-8 shadow-sm flex flex-col">
       <div className="flex items-start justify-between gap-6">
         <span className="inline-flex items-center rounded-xl border border-amber-200 bg-white px-3 py-1.5 text-xs font-bold tracking-wide uppercase text-amber-700">
-          Python Track
+          {details.label}
         </span>
         <span className="inline-flex items-center rounded-xl border border-amber-300 bg-amber-100 px-3 py-1.5 text-xs font-bold tracking-wide uppercase text-amber-800">
           Registration Closed
         </span>
       </div>
 
-      <h3 className="mt-5 font-serif text-4xl leading-tight text-slate-950">Games with Python</h3>
+      <h3 className="mt-5 font-serif text-4xl leading-tight text-slate-950">{details.title}</h3>
       <p className="mt-4 max-w-xl text-slate-600 text-[17px] leading-8">
-        This batch is full and registration is now closed. Games with Python will return in July for a
-        second batch if there's enough interest — check back soon or sign up for the AI track in the meantime!
+        Registration for this batch is now closed. {details.title} might return in July for a second
+        batch — it's not confirmed yet, so join the waitlist below to be notified if it does.
       </p>
 
       <div className="mt-auto flex items-center gap-2 pt-7 text-amber-700 font-bold">
         <Clock className="w-5 h-5" />
-        Returning July 2026
+        Might return July 2026
       </div>
     </div>
   );
@@ -212,24 +127,6 @@ function MentorSection() {
   );
 }
 
-function QrCodes() {
-  return (
-    <div className="mt-5">
-      <div className="text-sm font-bold text-slate-700 mb-3">Scan to pay</div>
-      <div className="grid grid-cols-2 gap-3">
-        <div className="border border-slate-200 rounded-2xl p-3 bg-white">
-          <div className="font-bold text-slate-900 text-sm mb-2">PayPal</div>
-          <img src="/paypal.jpeg" alt="PayPal QR code" className="w-full aspect-square object-cover rounded-xl border border-slate-200" />
-        </div>
-        <div className="border border-slate-200 rounded-2xl p-3 bg-white">
-          <div className="font-bold text-slate-900 text-sm mb-2">Zelle</div>
-          <img src="/zelle.jpeg" alt="Zelle QR code" className="w-full aspect-square object-cover rounded-xl border border-slate-200" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function Home({ setView }: HomeProps) {
   const heroDetails = [
     { icon: <CalendarDays className="w-4 h-4 text-blue-300" />, title: "June 2 – 25", sub: "Summer 2026" },
@@ -274,7 +171,7 @@ export function Home({ setView }: HomeProps) {
                   className="bg-orange-500 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-orange-600 shadow-lg shadow-orange-500/20 transition-colors"
                   onClick={() => document.getElementById("signup-section")?.scrollIntoView({ behavior: "smooth", block: "start" })}
                 >
-                  Reserve a Spot
+                  Join July Waitlist
                 </button>
                 <button
                   data-testid="btn-see-schedule"
@@ -286,102 +183,36 @@ export function Home({ setView }: HomeProps) {
               </div>
             </div>
 
-            {/* WIDE "At a Glance" Card */}
+            {/* At a Glance — registration status */}
             <div className="lg:col-span-7">
-              <div className="bg-white/10 backdrop-blur-md rounded-[32px] p-5 sm:p-6 md:p-8 text-white border border-white/10 shadow-2xl">
-                {/* Header Row */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                  <div />
-                  <div className="flex items-center gap-3 text-xs text-white/70">
-                    <span className="flex items-center gap-1.5">
-                      <Video className="w-3.5 h-3.5" />
-                      6 classes per track
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <CalendarDays className="w-3.5 h-3.5" />
-                      2 weeks each
-                    </span>
-                  </div>
+              <div className="bg-white/10 backdrop-blur-md rounded-[32px] p-6 sm:p-8 text-white border border-white/10 shadow-2xl">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold uppercase tracking-wide bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                    Registration Closed
+                  </span>
                 </div>
 
-                <p className="text-white/70 text-sm max-w-2xl leading-relaxed mb-5">
-                  Same live format, different project outcome. Pick your track below.
+                <h2 className="mt-4 font-serif text-2xl sm:text-3xl leading-tight text-white">
+                  Both summer tracks are full.
+                </h2>
+
+                <p className="mt-3 text-white/70 text-sm sm:text-base leading-relaxed max-w-xl">
+                  Games with Python and AI + Image Recognition might return in July for a second
+                  batch — it's not confirmed yet. Join the waitlist below and you'll be the first to
+                  hear if they do.
                 </p>
 
-                {/* Main Content: Class Cards Side by Side */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Pygame Card — registration closed */}
-                  <div className="rounded-2xl border border-white/15 bg-white/5 p-4 sm:p-5 flex flex-col">
-                    <div className="flex items-start justify-between gap-2 mb-3">
-                      <span className="inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wide bg-white/10 text-white/60 border border-white/20">
-                        Python
-                      </span>
-                      <span className="inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wide bg-amber-500/20 text-amber-300 border border-amber-400/30">
-                        Registration Closed
-                      </span>
-                    </div>
-
-                    <h3 className="font-bold text-lg sm:text-xl leading-tight text-white mb-2">
-                      Games with Python
-                    </h3>
-
-                    <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow mb-3">
-                      Registration for this batch is now closed. Games with Python returns in July for a second batch if there's enough interest!
-                    </p>
-
-                    <div className="flex items-center gap-1.5 text-amber-300 text-xs font-semibold mt-auto pt-2 border-t border-white/10">
-                      <Clock className="w-3.5 h-3.5" />
-                      Returning July 2026
-                    </div>
-                  </div>
-
-                  {/* ML Card */}
-                  <div className="rounded-2xl border border-white/15 bg-white/5 p-4 sm:p-5 flex flex-col">
-                    <div className="flex items-start justify-between gap-2 mb-3">
-                      <span className="inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wide bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                        ML / AI
-                      </span>
-                      <div className="text-right">
-                        <div className="flex items-baseline gap-1.5 justify-end">
-                          <span className="font-bold text-xl sm:text-2xl leading-none text-white">$25</span>
-                        </div>
-                        <div className="text-white/50 text-[10px]">/ week</div>
-                      </div>
-                    </div>
-
-                    <h3 className="font-bold text-lg sm:text-xl leading-tight text-white mb-2">
-                      AI + Image Recognition
-                    </h3>
-                    
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      <span className="inline-flex items-center rounded-full border border-blue-400/30 bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-300">
-                        Ages 10+
-                      </span>
-                      <span className="inline-flex items-center rounded-full border border-white/20 bg-white/5 px-2 py-0.5 text-[10px] font-semibold text-white/70">
-                        No coding needed
-                      </span>
-                    </div>
-
-                    <p className="text-white/60 text-xs sm:text-sm leading-relaxed flex-grow mb-3">
-                      Train your own AI to recognize gestures and trigger cool visual effects!
-                    </p>
-
-                    <div className="flex items-center gap-1.5 text-blue-300 text-xs font-semibold mt-auto pt-2 border-t border-white/10">
-                      <Clock className="w-3.5 h-3.5" />
-                      2:00 – 3:30 PM PST
-                    </div>
-                  </div>
-                </div>
-
-                {/* Class Time Card */}
-                <div className="mt-5 pt-4 border-t border-white/10">
-                  <div className="flex items-center gap-3 bg-teal-500/10 border border-teal-400/20 rounded-xl px-4 py-3 w-full">
-                    <Clock className="w-5 h-5 text-teal-300 shrink-0" />
-                    <div>
-                      <div className="text-xs font-bold text-teal-300 uppercase tracking-wide">Both Classes</div>
-                      <div className="text-sm font-semibold text-white">2:00 – 3:30 PM PST</div>
-                    </div>
-                  </div>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/80">
+                    Games with Python
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/80">
+                    AI + Image Recognition
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1.5 text-xs font-semibold text-blue-200">
+                    <Clock className="w-3.5 h-3.5" />
+                    Might return July 2026
+                  </span>
                 </div>
               </div>
             </div>
@@ -474,9 +305,9 @@ export function Home({ setView }: HomeProps) {
               <Clock className="w-5 h-5 text-blue-300" />
             </div>
             <div>
-              <div className="font-bold text-white text-base">Games with Python — Second Batch Coming in July</div>
+              <div className="font-bold text-white text-base">Both Tracks — A July Batch Might Happen</div>
               <div className="text-slate-200 text-sm mt-0.5">
-                Registration for the current batch is closed. It returns in July if there's enough interest!
+                Registration for the current batch is closed for both classes. A second batch in July is possible but not confirmed — join the waitlist to be notified.
               </div>
             </div>
           </div>
@@ -485,14 +316,14 @@ export function Home({ setView }: HomeProps) {
 
       <section className="py-16 bg-white">
         <div className="max-w-[1120px] mx-auto px-5">
-          <div className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-3">Choose A Track</div>
-          <h2 className="font-serif text-4xl text-slate-900 max-w-xl leading-tight">Build a real AI project this summer.</h2>
+          <div className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-3">The Tracks</div>
+          <h2 className="font-serif text-4xl text-slate-900 max-w-xl leading-tight">Two summer tracks, both currently full.</h2>
           <p className="mt-3 text-slate-500 max-w-2xl">
-            The AI track runs June 16-25. Games with Python registration is now closed — it returns in July for a second batch if there's enough interest!
+            Registration for both Games with Python and AI + Image Recognition is closed. A second batch in July is possible but not yet confirmed — join the waitlist if you'd like to be notified.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-7">
-            <PythonClosedCard />
-            <CourseCard track="ml" />
+            <ClosedCard track="pygame" />
+            <ClosedCard track="ml" />
           </div>
         </div>
       </section>
@@ -503,20 +334,20 @@ export function Home({ setView }: HomeProps) {
         <div className="max-w-[1120px] mx-auto px-5 grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
-              <div className="text-xs font-bold tracking-widest uppercase text-blue-600">Signup</div>
+              <div className="text-xs font-bold tracking-widest uppercase text-blue-600">Waitlist</div>
             </div>
-            <h2 className="font-serif text-4xl text-slate-900 leading-tight">Register for class.</h2>
-            <p className="mt-3 text-slate-500">Submit the form, send payment, and your registration will be activated after payment is confirmed.</p>
+            <h2 className="font-serif text-4xl text-slate-900 leading-tight">Join the July waitlist.</h2>
+            <p className="mt-3 text-slate-500">Registration for both summer tracks is closed. A July batch is possible but not confirmed — add your details below and you'll get an email if a batch is scheduled.</p>
             <SignupForm />
           </div>
           <div className="bg-gradient-to-b from-slate-50 to-blue-50 border border-slate-200 rounded-2xl p-8 self-start">
-  <h3 className="font-serif text-2xl text-slate-900 mb-5">Registration steps</h3>
+  <h3 className="font-serif text-2xl text-slate-900 mb-5">How the waitlist works</h3>
   <div className="flex flex-col gap-4">
     {[
-      ["1", "Enter parent name, email, student name, track, and any notes."],
-      ["2", "After submitting, scan either the PayPal or Zelle QR code to pay."],
-      ["3", "Once payment is confirmed, the registration is activated."],
-      ["4", "Use that same email to open the student portal for Zoom links and recordings."],
+      ["1", "Enter parent name, email, student name, preferred track, and any notes."],
+      ["2", "No payment is needed yet — the waitlist is just to gauge interest."],
+      ["3", "If a July batch is confirmed, you'll get an email with dates and payment details."],
+      ["4", "Spots will be offered to waitlisted families first, in order."],
     ].map(([num, text]) => (
       <div key={num} className="flex gap-3 items-start">
         <div className="w-7 h-7 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{num}</div>
@@ -525,10 +356,8 @@ export function Home({ setView }: HomeProps) {
     ))}
   </div>
 
-  <QrCodes />
-
-  <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-700 text-sm">
-    Please include the student name in the payment note so the registration can be matched quickly.
+  <div className="mt-5 p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-700 text-sm">
+    A July batch is not yet confirmed. Joining the waitlist helps decide whether to run one.
   </div>
 </div>
         </div>
