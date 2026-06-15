@@ -11,7 +11,7 @@ interface AdminProps {
 }
 
 export function Admin({ onExit }: AdminProps) {
-  const [tab, setTab] = useState<"students" | "add" | "content" | "resources" | "materials">("students");
+  const [tab, setTab] = useState<"students" | "waitlist" | "add" | "content" | "resources" | "materials">("students");
   const [students, setStudents] = useState<Student[]>([]);
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(false);
@@ -21,6 +21,8 @@ export function Admin({ onExit }: AdminProps) {
   const [resourceForm, setResourceForm] = useState({ track: "pygame" as Track, title: "", type: "", url: "" });
   const [materialForm, setMaterialForm] = useState({ track: "pygame" as Track, title: "", date: "", slidesUrl: "", codeUrl: "" });
   const [filters, setFilters] = useState({ track: "all", paid: "all", status: "all", search: "" });
+  const [waitlistSearch, setWaitlistSearch] = useState("");
+  const [waitlistTrackFilter, setWaitlistTrackFilter] = useState("all");
 
   async function loadData() {
     setLoading(true);
@@ -37,16 +39,25 @@ export function Admin({ onExit }: AdminProps) {
 
   useEffect(() => { loadData(); }, []);
 
+  const enrolledStudents = useMemo(
+    () => students.filter((s) => s.registrationStatus !== "waitlist"),
+    [students]
+  );
+  const waitlistStudents = useMemo(
+    () => students.filter((s) => s.registrationStatus === "waitlist"),
+    [students]
+  );
+
   const stats = useMemo(() => {
-    const paid = students.filter((s) => s.paid).length;
-    const halfPaid = students.filter((s) => !s.paid && s.halfPaid).length;
-    const unpaid = students.length - paid - halfPaid;
+    const paid = enrolledStudents.filter((s) => s.paid).length;
+    const halfPaid = enrolledStudents.filter((s) => !s.paid && s.halfPaid).length;
+    const unpaid = enrolledStudents.length - paid - halfPaid;
     const revenue = paid * 50 + halfPaid * 25;
-    return { total: students.length, paid, halfPaid, unpaid, revenue };
-  }, [students]);
+    return { total: enrolledStudents.length, paid, halfPaid, unpaid, revenue, waitlist: waitlistStudents.length };
+  }, [enrolledStudents, waitlistStudents]);
 
   const filteredStudents = useMemo(() => {
-    return students.filter((s) => {
+    return enrolledStudents.filter((s) => {
       if (filters.track !== "all" && s.track !== filters.track) return false;
       if (filters.paid === "paid" && !s.paid) return false;
       if (filters.paid === "half" && !(s.halfPaid && !s.paid)) return false;
@@ -59,7 +70,30 @@ export function Admin({ onExit }: AdminProps) {
       }
       return true;
     });
-  }, [students, filters]);
+  }, [enrolledStudents, filters]);
+
+  const filteredWaitlist = useMemo(() => {
+    return waitlistStudents.filter((s) => {
+      if (waitlistTrackFilter !== "all" && s.track !== waitlistTrackFilter) return false;
+      if (waitlistSearch) {
+        const needle = waitlistSearch.toLowerCase();
+        const hay = `${s.name} ${s.email} ${s.parentName} ${s.notes}`.toLowerCase();
+        if (!hay.includes(needle)) return false;
+      }
+      return true;
+    });
+  }, [waitlistStudents, waitlistSearch, waitlistTrackFilter]);
+
+  async function promoteFromWaitlist(student: Student) {
+    if (!confirm(`Move ${student.name} from the waitlist to the main student list as payment-pending?`)) return;
+    try {
+      await fbUpdateStudent(student.id, { registrationStatus: "payment-pending", source: "july-waitlist" });
+      setStudents((prev) => prev.map((item) =>
+        item.id === student.id ? { ...item, registrationStatus: "payment-pending", source: "july-waitlist" } : item
+      ));
+      setMessage(`${student.name} moved to the main student list.`);
+    } catch (error) { setMessage(getFirebaseError(error)); }
+  }
 
   async function addStudent() {
     if (!studentForm.name || !studentForm.email) { setMessage("Name and email are required."); return; }
@@ -219,13 +253,14 @@ export function Admin({ onExit }: AdminProps) {
 
       {message && <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-700 text-sm mb-5">{message}</div>}
 
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-7">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-7">
         {[
-          ["Total Signups", stats.total, "bg-slate-100 text-slate-600"],
+          ["Enrolled", stats.total, "bg-slate-100 text-slate-600"],
           ["Full Paid", stats.paid, "bg-emerald-100 text-emerald-700"],
           ["Half Paid", stats.halfPaid, "bg-blue-100 text-blue-700"],
           ["Unpaid", stats.unpaid, "bg-amber-100 text-amber-700"],
-          ["Revenue", `$${stats.revenue}`, "bg-teal-100 text-teal-700"]
+          ["Revenue", `$${stats.revenue}`, "bg-teal-100 text-teal-700"],
+          ["July Waitlist", stats.waitlist, "bg-purple-100 text-purple-700"]
         ].map(([label, value, cls]) => (
           <div key={String(label)} className="bg-white border border-slate-200 rounded-2xl p-5">
             <span className={`text-xs font-bold rounded-full px-3 py-1 ${cls}`}>{label}</span>
@@ -235,14 +270,14 @@ export function Admin({ onExit }: AdminProps) {
       </div>
 
       <div className="flex gap-2.5 flex-wrap mb-6">
-        {(["students", "add", "content", "resources", "materials"] as const).map((id) => (
+        {(["students", "waitlist", "add", "content", "resources", "materials"] as const).map((id) => (
           <button
             key={id}
             data-testid={`tab-${id}`}
             className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${tab === id ? "bg-slate-900 text-white" : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"}`}
             onClick={() => setTab(id)}
           >
-            {id === "students" ? "Students" : id === "add" ? "Add Student" : id === "content" ? "Portal Content" : id === "resources" ? "Resources" : "Class Materials"}
+            {id === "students" ? "Students" : id === "waitlist" ? `July Waitlist${stats.waitlist ? ` (${stats.waitlist})` : ""}` : id === "add" ? "Add Student" : id === "content" ? "Portal Content" : id === "resources" ? "Resources" : "Class Materials"}
           </button>
         ))}
       </div>
@@ -377,6 +412,82 @@ export function Admin({ onExit }: AdminProps) {
                         </td>
                         <td className="p-3 border-b border-slate-100">
                           <button className="text-xs font-bold border border-slate-200 bg-white text-slate-700 px-2.5 py-1.5 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors" onClick={() => removeStudent(student)}>Remove</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {tab === "waitlist" && (
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+              <div className="flex items-start justify-between gap-4 flex-wrap mb-5">
+                <div>
+                  <div className="text-xs font-bold tracking-widest uppercase text-purple-600 mb-1">July Waitlist</div>
+                  <h2 className="font-serif text-2xl text-slate-900">Signups waiting on the July batch</h2>
+                  <p className="text-slate-500 text-sm mt-1">These families joined the waitlist from the homepage. They haven't paid and aren't enrolled — promote them to the main list once a July batch is confirmed.</p>
+                </div>
+                <span className="text-xs font-bold rounded-full px-3 py-1 bg-purple-100 text-purple-700 shrink-0">{waitlistStudents.length} total</span>
+              </div>
+
+              <div className="flex gap-3 flex-wrap mb-5">
+                <input className={`flex-1 min-w-[220px] ${inputCls}`} placeholder="Search name, email, parent, notes" value={waitlistSearch} onChange={(e) => setWaitlistSearch(e.target.value)} />
+                <select className={`w-44 ${selectCls}`} value={waitlistTrackFilter} onChange={(e) => setWaitlistTrackFilter(e.target.value)}>
+                  <option value="all">All Tracks</option>
+                  <option value="pygame">Pygame</option>
+                  <option value="ml">ML / AI</option>
+                </select>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr>
+                      {["Student", "Contact", "Preferred Track", "Notes", "Source", "Actions"].map((h) => (
+                        <th key={h} className="text-left p-3 text-xs text-slate-400 uppercase tracking-wide border-b border-slate-100">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {!filteredWaitlist.length && (
+                      <tr><td colSpan={6} className="p-4 text-slate-400 text-sm">No waitlist signups yet.</td></tr>
+                    )}
+                    {filteredWaitlist.map((student) => (
+                      <tr key={student.id} data-testid={`waitlist-row-${student.id}`} className="hover:bg-slate-50">
+                        <td className="p-3 border-b border-slate-100">
+                          <div className="font-bold text-sm text-slate-900">{student.name}</div>
+                          <div className="text-xs text-slate-400">{student.age ? `Age ${student.age}` : "Age not set"}</div>
+                        </td>
+                        <td className="p-3 border-b border-slate-100">
+                          <div className="text-sm text-slate-700">{student.email}</div>
+                          <div className="text-xs text-slate-400">{student.parentName || "No parent name"}</div>
+                        </td>
+                        <td className="p-3 border-b border-slate-100">
+                          <span className={`text-xs font-bold rounded-full px-2.5 py-1 ${student.track === "ml" ? "bg-teal-100 text-teal-700" : "bg-amber-100 text-amber-700"}`}>{trackMeta(student.track).name}</span>
+                        </td>
+                        <td className="p-3 border-b border-slate-100 max-w-[280px]">
+                          <div className="text-xs text-slate-600 whitespace-pre-wrap">{student.notes || <span className="text-slate-300">—</span>}</div>
+                        </td>
+                        <td className="p-3 border-b border-slate-100">
+                          <span className="text-xs font-bold bg-slate-100 text-slate-600 rounded-full px-2.5 py-1">{student.source}</span>
+                        </td>
+                        <td className="p-3 border-b border-slate-100">
+                          <div className="flex flex-col gap-1.5 min-w-[150px]">
+                            <button
+                              className="text-xs font-bold px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                              onClick={() => promoteFromWaitlist(student)}
+                            >
+                              Promote to Student
+                            </button>
+                            <button
+                              className="text-xs font-bold border border-slate-200 bg-white text-slate-700 px-2.5 py-1.5 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+                              onClick={() => removeStudent(student)}
+                            >
+                              Remove
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
