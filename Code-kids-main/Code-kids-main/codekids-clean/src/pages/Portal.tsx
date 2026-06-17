@@ -34,6 +34,11 @@ export function Portal() {
         setLoading(false);
         return;
       }
+      if (!matchedStudent.paid && !matchedStudent.halfPaid) {
+        setError("Your payment hasn't been received yet, so your portal access is paused. Once payment is confirmed, you'll be able to log in. Please reach out to your instructor if you've already paid.");
+        setLoading(false);
+        return;
+      }
       setSettings(foundSettings);
       setStudent(matchedStudent);
       setStudents([]);
